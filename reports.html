@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Medicine Reports</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* ==================================================
+           REPORT PAGE
+        ================================================== */
+
+        .report-page {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+
+        /* ==================================================
+           REPORT SUMMARY CARD
+        ================================================== */
+
+        .report-summary-card {
+
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            padding: 28px;
+
+            margin-top: 25px;
+
+            box-shadow:
+                0 8px 25px rgba(0, 80, 150, 0.10);
+
+        }
+
+
+        .report-summary-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .report-summary-icon {
+
+            width: 48px;
+            height: 48px;
+
+            border-radius: 50%;
+
+            background: #1677ff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 24px;
+
+            color: white;
+
+        }
+
+
+        .report-summary-title h2 {
+
+            margin: 0;
+
+            color: #103a75;
+
+            font-size: 25px;
+
+        }
+
+
+        /* ==================================================
+           SUMMARY INFORMATION
+        ================================================== */
+
+        .report-info-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+
+        }
+
+
+        .report-info-box {
+
+            background: #f5f9ff;
+
+            border: 1px solid #dcecff;
+
+            border-radius: 12px;
+
+            padding: 17px;
+
+        }
+
+
+        .report-info-box span {
+
+            display: block;
+
+            font-size: 14px;
+
+            color: #607899;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .report-info-box strong {
+
+            font-size: 20px;
+
+            color: #103a75;
+
+        }
+
+
+        /* ==================================================
+           MEDICINE SUMMARY
+        ================================================== */
+
+        .medicine-report-card {
+
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            padding: 28px;
+
+            margin-top: 25px;
+
+            box-shadow:
+                0 8px 25px rgba(0, 80, 150, 0.10);
+
+        }
+
+
+        .medicine-report-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .medicine-report-title-icon {
+
+            width: 48px;
+            height: 48px;
+
+            border-radius: 50%;
+
+            background: #1677ff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 24px;
+
+        }
+
+
+        .medicine-report-title h2 {
+
+            margin: 0;
+
+            color: #103a75;
+
+            font-size: 25px;
+
+        }
+
+
+        /* ==================================================
+           TABLE
+        ================================================== */
+
+        .medicine-table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+        }
+
+
+        .medicine-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 750px;
+
+        }
+
+
+        .medicine-table thead {
+
+            background: #edf5ff;
+
+        }
+
+
+        .medicine-table th {
+
+            padding: 15px 14px;
+
+            text-align: left;
+
+            color: #103a75;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            border-bottom: 2px solid #d8e8fa;
+
+        }
+
+
+        .medicine-table td {
+
+            padding: 16px 14px;
+
+            color: #294b73;
+
+            font-size: 15px;
+
+            border-bottom: 1px solid #e5edf6;
+
+            vertical-align: middle;
+
+        }
+
+
+        .medicine-table tbody tr:hover {
+
+            background: #f8fbff;
+
+        }
+
+
+        .medicine-number {
+
+            width: 60px;
+
+            text-align: center !important;
+
+            font-weight: bold;
+
+        }
+
+
+        .medicine-name {
+
+            font-weight: 700;
+
+            color: #103a75 !important;
+
+        }
+
+
+        .dosage-value {
+
+            font-weight: 600;
+
+            color: #1677ff !important;
+
+        }
+
+
+        .time-value {
+
+            font-weight: 600;
+
+        }
+
+
+        .date-value {
+
+            white-space: nowrap;
+
+        }
+
+
+        /* ==================================================
+           STATUS
+        ================================================== */
+
+        .status-badge {
+
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        .status-active {
+
+            background: #e6f8ee;
+
+            color: #16834b;
+
+        }
+
+
+        .status-completed {
+
+            background: #ffe8e8;
+
+            color: #d33b3b;
+
+        }
+
+
+        /* ==================================================
+           NO MEDICINE
+        ================================================== */
+
+        .no-medicine {
+
+            text-align: center;
+
+            padding: 40px 20px;
+
+            color: #607899;
+
+            background: #f8fbff;
+
+            border-radius: 12px;
+
+        }
+
+
+        .no-medicine-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .no-medicine h3 {
+
+            margin: 5px 0;
+
+            color: #103a75;
+
+        }
+
+
+        /* ==================================================
+           BACK BUTTON
+        ================================================== */
+
+        .report-back-btn {
+
+            display: block;
+
+            margin: 28px auto 10px;
+
+            padding: 14px 30px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #ed3346;
+
+            color: white;
+
+            font-size: 15px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+
+        .report-back-btn:hover {
+
+            background: #d92539;
+
+            transform: translateY(-1px);
+
+        }
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 700px) {
+
+            .report-info-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .report-summary-card,
+            .medicine-report-card {
+
+                padding: 20px;
+
+            }
+
+            .report-summary-title h2,
+            .medicine-report-title h2 {
+
+                font-size: 21px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<header class="top-header">
+
+    <div class="logo-section">
+
+        <div class="logo">
+            💗
+        </div>
+
+        <div>
+
+            <h1>
+                Medicine Reminder System
+            </h1>
+
+            <p>
+                Using QR Code
+            </p>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<main class="main-content report-page">
+
+
+    <!-- ==================================================
+         WELCOME
+    ================================================== -->
+
+    <section class="welcome-section">
+
+        <div>
+
+            <p class="welcome-small">
+                Medicine Management
+            </p>
+
+            <h2>
+                📊 Reports
+            </h2>
+
+            <p class="welcome-text">
+                View your medicine and reminder reports.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         REPORT SUMMARY
+    ================================================== -->
+
+    <section class="report-summary-card">
+
+
+        <div class="report-summary-title">
+
+            <div class="report-summary-icon">
+                📊
+            </div>
+
+            <div>
+
+                <h2>
+                    Medicine Report
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="report-info-grid">
+
+
+            <!-- PATIENT -->
+
+            <div class="report-info-box">
+
+                <span>
+                    👤 Patient
+                </span>
+
+                <strong id="patientName">
+                    -
+                </strong>
+
+            </div>
+
+
+            <!-- TOTAL -->
+
+            <div class="report-info-box">
+
+                <span>
+                    💊 Total Medicines
+                </span>
+
+                <strong id="totalMedicines">
+                    0
+                </strong>
+
+            </div>
+
+
+            <!-- ACTIVE -->
+
+            <div class="report-info-box">
+
+                <span>
+                    🔔 Active Reminders
+                </span>
+
+                <strong id="activeReminders">
+                    0
+                </strong>
+
+            </div>
+
+
+            <!-- COMPLETED -->
+
+            <div class="report-info-box">
+
+                <span>
+                    ✅ Completed Medicines
+                </span>
+
+                <strong id="completedMedicines">
+                    0
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         MEDICINE SUMMARY
+    ================================================== -->
+
+    <section class="medicine-report-card">
+
+
+        <div class="medicine-report-title">
+
+            <div class="medicine-report-title-icon">
+                💊
+            </div>
+
+            <div>
+
+                <h2>
+                    Medicine Summary
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="medicine-table-wrapper">
+
+            <table class="medicine-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th class="medicine-number">
+                            S.No
+                        </th>
+
+                        <th>
+                            Medicine Name
+                        </th>
+
+                        <th>
+                            Dosage
+                        </th>
+
+                        <th>
+                            Reminder Time
+                        </th>
+
+                        <th>
+                            Start Date
+                        </th>
+
+                        <th>
+                            End Date
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="reportMedicineList">
+
+                    <!-- Medicines will appear here -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         BACK BUTTON
+    ================================================== -->
+
+    <button
+        class="report-back-btn"
+        onclick="window.location.href='index.html'">
+
+        🏠 Back to Dashboard
+
+    </button>
+
+
+</main>
+
+
+
+<!-- ==================================================
+     JAVASCRIPT
+================================================== -->
+
+<script>
+
+
+// ==================================================
+// CHECK LOGIN
+// ==================================================
+
+const loggedInUser =
+    localStorage.getItem("loggedInUser");
+
+
+if (!loggedInUser) {
+
+    alert("Please login first.");
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+
+// ==================================================
+// PATIENT NAME
+// ==================================================
+
+document.getElementById(
+    "patientName"
+).textContent =
+    loggedInUser || "Patient";
+
+
+
+// ==================================================
+// GET MEDICINES
+// ==================================================
+
+const allMedicines =
+    JSON.parse(
+        localStorage.getItem("medicines")
+    ) || [];
+
+
+
+// ==================================================
+// GET CURRENT USER MEDICINES
+// ==================================================
+
+const myMedicines =
+    allMedicines.filter(
+        function (medicine) {
+
+            return medicine.username ===
+                   loggedInUser;
+
+        }
+    );
+
+
+
+// ==================================================
+// TOTAL MEDICINES
+// ==================================================
+
+document.getElementById(
+    "totalMedicines"
+).textContent =
+    myMedicines.length;
+
+
+
+// ==================================================
+// TODAY
+// ==================================================
+
+const today =
+    new Date();
+
+
+const todayString =
+    today.getFullYear() +
+    "-" +
+    String(
+        today.getMonth() + 1
+    ).padStart(2, "0") +
+    "-" +
+    String(
+        today.getDate()
+    ).padStart(2, "0");
+
+
+
+// ==================================================
+// DATE FORMAT
+// ==================================================
+
+function formatDate(date) {
+
+    if (!date) {
+
+        return "-";
+
+    }
+
+
+    let dateString =
+        date.toString();
+
+
+    // ISO date
+
+    if (
+        dateString.includes("T")
+    ) {
+
+        dateString =
+            dateString.substring(
+                0,
+                10
+            );
+
+    }
+
+
+    // YYYY-MM-DD
+
+    if (
+        /^\d{4}-\d{2}-\d{2}$/.test(
+            dateString.substring(0, 10)
+        )
+    ) {
+
+        const parts =
+            dateString
+                .substring(0, 10)
+                .split("-");
+
+
+        return (
+            parts[2] +
+            "-" +
+            parts[1] +
+            "-" +
+            parts[0]
+        );
+
+    }
+
+
+    return dateString;
+
+}
+
+
+
+// ==================================================
+// TIME FORMAT
+// ==================================================
+
+function formatTime(time) {
+
+    if (!time) {
+
+        return "-";
+
+    }
+
+
+    const parts =
+        time.toString().split(":");
+
+
+    let hour =
+        parseInt(parts[0]);
+
+
+    const minute =
+        parts[1] || "00";
+
+
+    const ampm =
+        hour >= 12
+        ? "PM"
+        : "AM";
+
+
+    hour =
+        hour % 12;
+
+
+    if (hour === 0) {
+
+        hour = 12;
+
+    }
+
+
+    return (
+        hour +
+        ":" +
+        minute +
+        " " +
+        ampm
+    );
+
+}
+
+
+
+// ==================================================
+// GET END DATE
+// ==================================================
+
+function getEndDate(medicine) {
+
+    if (
+        !medicine.end ||
+        medicine.end === "Lifelong"
+    ) {
+
+        return "Lifelong";
+
+    }
+
+
+    return medicine.end;
+
+}
+
+
+
+// ==================================================
+// CHECK MEDICINE STATUS
+// ==================================================
+
+function isActive(medicine) {
+
+    const endDate =
+        getEndDate(medicine);
+
+
+    if (
+        endDate === "Lifelong"
+    ) {
+
+        return true;
+
+    }
+
+
+    return todayString <= endDate;
+
+}
+
+
+
+// ==================================================
+// ACTIVE / COMPLETED
+// ==================================================
+
+let activeCount = 0;
+
+let completedCount = 0;
+
+
+myMedicines.forEach(
+    function (medicine) {
+
+        if (
+            isActive(medicine)
+        ) {
+
+            activeCount++;
+
+        }
+        else {
+
+            completedCount++;
+
+        }
+
+    }
+);
+
+
+
+document.getElementById(
+    "activeReminders"
+).textContent =
+    activeCount;
+
+
+document.getElementById(
+    "completedMedicines"
+).textContent =
+    completedCount;
+
+
+
+// ==================================================
+// DISPLAY MEDICINES
+// ==================================================
+
+const reportList =
+    document.getElementById(
+        "reportMedicineList"
+    );
+
+
+
+if (
+    myMedicines.length === 0
+) {
+
+    reportList.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="7"
+                style="
+                    padding:0;
+                    border:none;
+                "
+            >
+
+                <div class="no-medicine">
+
+                    <div class="no-medicine-icon">
+                        💊
+                    </div>
+
+                    <h3>
+                        No Medicines Found
+                    </h3>
+
+                    <p>
+                        Add a medicine to generate your report.
+                    </p>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    `;
+
+}
+else {
+
+
+    myMedicines.forEach(
+        function (
+            medicine,
+            index
+        ) {
+
+
+            const active =
+                isActive(medicine);
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <!-- S.NO -->
+
+                <td
+                    class="medicine-number"
+                >
+                    ${index + 1}
+                </td>
+
+
+                <!-- MEDICINE -->
+
+                <td
+                    class="medicine-name"
+                >
+                    💊
+                    ${medicine.medicine || "-"}
+                </td>
+
+
+                <!-- DOSAGE -->
+
+                <td
+                    class="dosage-value"
+                >
+                    ${medicine.dosage || "-"}
+                </td>
+
+
+                <!-- TIME -->
+
+                <td
+                    class="time-value"
+                >
+                    ⏰
+                    ${formatTime(
+                        medicine.time ||
+                        medicine.reminder_time
+                    )}
+                </td>
+
+
+                <!-- START -->
+
+                <td
+                    class="date-value"
+                >
+                    ${formatDate(
+                        medicine.start ||
+                        medicine.start_date
+                    )}
+                </td>
+
+
+                <!-- END -->
+
+                <td
+                    class="date-value"
+                >
+                    ${formatDate(
+                        medicine.end ||
+                        medicine.end_date
+                    )}
+                </td>
+
+
+                <!-- STATUS -->
+
+                <td>
+
+                    <span
+                        class="
+                            status-badge
+                            ${
+                                active
+                                ? "status-active"
+                                : "status-completed"
+                            }
+                        "
+                    >
+
+                        ${
+                            active
+                            ? "Active"
+                            : "Completed"
+                        }
+
+                    </span>
+
+                </td>
+
+            `;
+
+
+            reportList.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Medicines</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- ===================================== -->
+<!-- HEADER -->
+<!-- ===================================== -->
+
+<header class="top-header">
+
+    <div class="logo-section">
+
+        <div class="logo">
+            💊
+        </div>
+
+        <div>
+
+            <h1>
+                Medicine Reminder System
+            </h1>
+
+            <p>
+                My Medicines
+            </p>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ===================================== -->
+<!-- MEDICINE LIST PAGE -->
+<!-- ===================================== -->
+
+<div class="medicine-list-page">
+
+
+    <!-- ================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ================================= -->
+
+    <div class="list-header">
+
+        <div>
+
+            <h2>
+                💊 My Medicines
+            </h2>
+
+            <p>
+                Your long-term medicine reminders
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            onclick="window.location.href='add-medicine.html'"
+        >
+
+            ➕ Add Medicine
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- MEDICINE LIST -->
+    <!-- ================================= -->
+
+    <div id="medicineList">
+
+        <p>
+            Loading medicines...
+        </p>
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- NO MEDICINE -->
+    <!-- ================================= -->
+
+    <div
+        id="noMedicine"
+        class="no-medicine"
+        style="display:none;"
+    >
+
+        <div>
+            💊
+        </div>
+
+        <h3>
+            No Medicines Added
+        </h3>
+
+        <p>
+            Add your medicine to create a reminder.
+        </p>
+
+        <button
+            type="button"
+            onclick="window.location.href='add-medicine.html'"
+        >
+
+            Add Your First Medicine
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- TEST ALARM + STOP ALARM -->
+    <!-- ================================= -->
+
+    <div
+        style="
+            margin-top:20px;
+        "
+    >
+
+        <button
+            type="button"
+            onclick="testAlarm()"
+            style="
+                background:#ff9800;
+                color:white;
+                padding:12px 20px;
+                border:none;
+                border-radius:8px;
+                font-size:16px;
+                cursor:pointer;
+                margin-right:10px;
+            "
+        >
+
+            🔔 Test Alarm
+
+        </button>
+
+
+        <button
+            type="button"
+            onclick="stopAlarm()"
+            style="
+                background:#dc3545;
+                color:white;
+                padding:12px 20px;
+                border:none;
+                border-radius:8px;
+                font-size:16px;
+                cursor:pointer;
+            "
+        >
+
+            🛑 Stop Alarm
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- BACK TO DASHBOARD -->
+    <!-- ================================= -->
+
+    <br>
+    <br>
+
+    <button
+        type="button"
+        class="back-btn"
+        onclick="window.location.href='index.html'"
+    >
+
+        ← Back to Dashboard
+
+    </button>
+
+
+</div>
+
+
+
+<!-- ===================================== -->
+<!-- MEDICINE ALARM POPUP -->
+<!-- ===================================== -->
+
+<!--
+    Popup is created automatically
+    by medicine-list.js
+
+    DO NOT put Test Medicine / 100mg here.
+-->
+
+
+
+<!-- ===================================== -->
+<!-- JAVASCRIPT -->
+<!-- ===================================== -->
+
+<script src="medicine-list.js"></script>
+
+
+</body>
+
+</html>

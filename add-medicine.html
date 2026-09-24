@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Add Medicine - Medicine Reminder System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+</head>
+
+
+<body>
+
+<header class="top-header">
+
+    <div class="logo-section">
+
+        <div class="logo">
+            💊
+        </div>
+
+        <div>
+            <h1>Medicine Reminder System</h1>
+            <p>Using QR Code</p>
+        </div>
+
+    </div>
+
+</header>
+
+
+<div class="add-medicine-page">
+
+    <div class="add-medicine-card">
+
+        <div class="add-title">
+
+            <div class="add-title-icon">
+                💊
+            </div>
+
+            <div>
+                <h2>Add New Medicine</h2>
+                <p>Set your medicine reminder</p>
+            </div>
+
+        </div>
+
+
+        <label for="medicine">
+            Medicine Name
+        </label>
+
+        <input
+            type="text"
+            id="medicine"
+            placeholder="Enter medicine name"
+        >
+
+
+        <label for="dosage">
+            Dosage
+        </label>
+
+        <input
+            type="text"
+            id="dosage"
+            placeholder="Example: 500 mg"
+        >
+
+
+        <label for="time">
+            Reminder Time
+        </label>
+
+        <input
+            type="time"
+            id="time"
+        >
+
+
+        <label for="start">
+            Start Date
+        </label>
+
+        <input
+            type="date"
+            id="start"
+        >
+
+
+        <label for="medicineType">
+            Medicine Type
+        </label>
+
+        <select id="medicineType">
+
+            <option value="short-term">
+                Short-Term Medicine
+            </option>
+
+            <option value="lifelong">
+                Lifelong Medicine
+            </option>
+
+        </select>
+
+
+        <label for="end">
+            End Date
+        </label>
+
+        <input
+            type="date"
+            id="end"
+        >
+
+
+        <!-- SAVE BUTTON -->
+
+        <button
+            type="button"
+            class="medicine-save-btn"
+            id="saveMedicineBtn">
+
+            🔔 Save Medicine Reminder
+
+        </button>
+
+
+        <!-- QR CODE -->
+
+        <div id="qrcode"></div>
+
+
+        <!-- VIEW MEDICINES -->
+
+        <button
+            type="button"
+            class="view-medicine-btn"
+            onclick="window.location.href='medicine-list.html'">
+
+            💊 View My Medicines
+
+        </button>
+
+
+        <!-- BACK -->
+
+        <button
+            type="button"
+            class="back-btn"
+            onclick="window.location.href='index.html'">
+
+            ← Back to Dashboard
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+// ==========================================
+// SAVE BUTTON
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const button =
+            document.getElementById(
+                "saveMedicineBtn"
+            );
+
+        if (button) {
+
+            button.addEventListener(
+                "click",
+                saveMedicine
+            );
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// SAVE MEDICINE
+// ==========================================
+
+async function saveMedicine() {
+
+    const button =
+        document.getElementById(
+            "saveMedicineBtn"
+        );
+
+
+    // ======================================
+    // GET LOGGED USER
+    // ======================================
+
+    const username =
+        localStorage.getItem(
+            "loggedInUser"
+        );
+
+
+    if (!username) {
+
+        alert(
+            "Please login first."
+        );
+
+        window.location.href =
+            "login.html";
+
+        return;
+    }
+
+
+    // ======================================
+    // GET VALUES
+    // ======================================
+
+    const medicine =
+        document.getElementById(
+            "medicine"
+        ).value.trim();
+
+
+    const dosage =
+        document.getElementById(
+            "dosage"
+        ).value.trim();
+
+
+    const time =
+        document.getElementById(
+            "time"
+        ).value;
+
+
+    const start =
+        document.getElementById(
+            "start"
+        ).value;
+
+
+    const medicineType =
+        document.getElementById(
+            "medicineType"
+        ).value;
+
+
+    let end =
+        document.getElementById(
+            "end"
+        ).value;
+
+
+    // ======================================
+    // VALIDATION
+    // ======================================
+
+    if (!medicine) {
+
+        alert(
+            "Please enter Medicine Name."
+        );
+
+        return;
+    }
+
+
+    if (!dosage) {
+
+        alert(
+            "Please enter Dosage."
+        );
+
+        return;
+    }
+
+
+    if (!time) {
+
+        alert(
+            "Please select Reminder Time."
+        );
+
+        return;
+    }
+
+
+    if (!start) {
+
+        alert(
+            "Please select Start Date."
+        );
+
+        return;
+    }
+
+
+    if (
+        medicineType === "short-term" &&
+        !end
+    ) {
+
+        alert(
+            "Please select End Date."
+        );
+
+        return;
+    }
+
+
+    // ======================================
+    // LIFELONG
+    // ======================================
+
+    if (
+        medicineType === "lifelong"
+    ) {
+
+        end = "9999-12-31";
+
+    }
+
+
+    // ======================================
+    // DATE VALIDATION
+    // ======================================
+
+    if (
+        medicineType === "short-term" &&
+        end < start
+    ) {
+
+        alert(
+            "End Date cannot be before Start Date."
+        );
+
+        return;
+    }
+
+
+    // ======================================
+    // MEDICINE DATA
+    // ======================================
+
+    const medicineData = {
+
+        username: username,
+
+        medicine: medicine,
+
+        dosage: dosage,
+
+        time: time,
+
+        start: start,
+
+        end: end,
+
+        medicineType: medicineType,
+
+        reminderStatus:
+            medicineType === "lifelong"
+                ? "ENABLED"
+                : "NOT REQUIRED"
+
+    };
+
+
+    console.log(
+        "📤 Sending medicine:",
+        medicineData
+    );
+
+
+    // ======================================
+    // BUTTON LOADING
+    // ======================================
+
+    button.disabled = true;
+
+    button.innerText =
+        "⏳ Saving...";
+
+
+    let controller = null;
+
+    let timeoutId = null;
+
+
+    try {
+
+        // ==================================
+        // REQUEST CONTROLLER
+        // ==================================
+
+        controller =
+            new AbortController();
+
+
+        timeoutId =
+            setTimeout(
+                function () {
+
+                    controller.abort();
+
+                },
+                10000
+            );
+
+
+        // ==================================
+        // SEND TO BACKEND
+        // ==================================
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:5000/api/medicines",
+                {
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            medicineData
+                        ),
+
+                    signal:
+                        controller.signal
+
+                }
+            );
+
+
+        clearTimeout(
+            timeoutId
+        );
+
+
+        timeoutId = null;
+
+
+        console.log(
+            "📡 Backend status:",
+            response.status
+        );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "📥 Backend response:",
+            result
+        );
+
+
+        // ==================================
+        // CHECK RESPONSE
+        // ==================================
+
+        if (!response.ok) {
+
+            throw new Error(
+
+                result.message ||
+                result.error ||
+                "Failed to save medicine."
+
+            );
+
+        }
+
+
+        // ==================================
+        // LOCAL STORAGE
+        // ==================================
+
+        let medicines =
+            JSON.parse(
+                localStorage.getItem(
+                    "medicines"
+                )
+            ) || [];
+
+
+        medicines.push(
+            medicineData
+        );
+
+
+        localStorage.setItem(
+            "medicines",
+            JSON.stringify(
+                medicines
+            )
+        );
+
+
+        localStorage.setItem(
+            "medicineData",
+            JSON.stringify(
+                medicineData
+            )
+        );
+
+
+        // ==================================
+        // QR CODE
+        // ==================================
+
+        const qr =
+            document.getElementById(
+                "qrcode"
+            );
+
+
+        if (qr) {
+
+            qr.innerHTML = "";
+
+
+            if (
+                typeof QRCode !==
+                "undefined"
+            ) {
+
+                new QRCode(
+
+                    qr,
+
+                    {
+
+                        text:
+                            JSON.stringify(
+                                medicineData
+                            ),
+
+                        width: 180,
+
+                        height: 180
+
+                    }
+
+                );
+
+            }
+
+        }
+
+
+        // ==================================
+        // SUCCESS
+        // ==================================
+
+        alert(
+
+            "✅ MEDICINE SAVED SUCCESSFULLY!\n\n" +
+
+            "Medicine: " +
+            medicine +
+            "\n" +
+
+            "Dosage: " +
+            dosage +
+            "\n" +
+
+            "Time: " +
+            time +
+            "\n\n" +
+
+            "✅ MySQL Database Saved\n" +
+
+            "✅ QR Code Generated"
+
+        );
+
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "❌ Save Error:",
+            error
+        );
+
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            alert(
+
+                "❌ Backend response timed out.\n\n" +
+
+                "Please make sure server.js is running."
+
+            );
+
+        }
+
+        else {
+
+            alert(
+
+                "❌ Medicine could not be saved.\n\n" +
+
+                "Error: " +
+                error.message
+
+            );
+
+        }
+
+    }
+
+
+    finally {
+
+        if (timeoutId) {
+
+            clearTimeout(
+                timeoutId
+            );
+
+        }
+
+
+        button.disabled = false;
+
+
+        button.innerText =
+            "🔔 Save Medicine Reminder";
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>

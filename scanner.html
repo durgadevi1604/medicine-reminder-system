@@ -1,0 +1,225 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scan Medicine QR Code</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- QR Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+
+        .scanner-box {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        #reader {
+            width: 100%;
+        }
+
+        .camera-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .camera-buttons button {
+            flex: 1;
+            margin-top: 0;
+        }
+
+        .switch-btn {
+            background: #7c3aed;
+        }
+
+        .camera-status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f4f6f9;
+            border-radius: 10px;
+        }
+
+        .result h3 {
+            color: #2563eb;
+            margin-top: 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .save-btn {
+            background: #198754;
+        }
+
+        .home-btn {
+            background: #6c757d;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+    <h1>Scan Medicine QR Code</h1>
+</header>
+
+
+<div class="scanner-box">
+
+    <!-- ============================= -->
+    <!-- QR SCANNER -->
+    <!-- ============================= -->
+
+    <div id="reader"></div>
+
+
+    <!-- ============================= -->
+    <!-- CAMERA CONTROLS -->
+    <!-- ============================= -->
+
+    <div class="camera-buttons">
+
+        <button
+            type="button"
+            onclick="startBackCamera()">
+            📷 Back Camera
+        </button>
+
+        <button
+            type="button"
+            onclick="startFrontCamera()">
+            🤳 Front Camera
+        </button>
+
+    </div>
+
+
+    <button
+        type="button"
+        class="switch-btn"
+        onclick="switchCamera()">
+        🔄 Switch Camera
+    </button>
+
+
+    <div class="camera-status">
+        Camera: <strong id="cameraStatus">Back Camera</strong>
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- SCANNED RESULT -->
+    <!-- ============================= -->
+
+    <div class="result">
+
+        <h3>Scanned Medicine</h3>
+
+        <p>
+            <strong>Medicine:</strong>
+            <span id="medicineName">-</span>
+        </p>
+
+        <p>
+            <strong>Dosage:</strong>
+            <span id="medicineDose">-</span>
+        </p>
+
+        <p>
+            <strong>Time:</strong>
+            <span id="medicineTime">-</span>
+        </p>
+
+        <p>
+            <strong>Start Date:</strong>
+            <span id="medicineStart">-</span>
+        </p>
+
+        <p>
+            <strong>End Date:</strong>
+            <span id="medicineEnd">-</span>
+        </p>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- SAVE BUTTON -->
+    <!-- ============================= -->
+
+    <button
+        type="button"
+        class="save-btn"
+        onclick="saveScannedMedicine()">
+        💾 Save Scanned Medicine
+    </button>
+
+
+    <!-- ============================= -->
+    <!-- VIEW MEDICINES -->
+    <!-- ============================= -->
+
+    <button
+        type="button"
+        onclick="window.location.href='medicine-list.html'">
+        💊 View My Medicines
+    </button>
+
+
+    <!-- ============================= -->
+    <!-- HOME -->
+    <!-- ============================= -->
+
+    <button
+        type="button"
+        class="home-btn"
+        onclick="window.location.href='index.html'">
+        ⬅ Back to Home
+    </button>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- SCANNER JAVASCRIPT -->
+<!-- ============================= -->
+
+<script src="scanner.js"></script>
+
+</body>
+
+</html>
+```

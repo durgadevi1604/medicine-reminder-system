@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Settings - Medicine Reminder System</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+    <div class="logo-section">
+
+        <div class="logo">
+            💗
+        </div>
+
+        <div>
+
+            <h1>
+                Medicine Reminder System
+            </h1>
+
+            <p>
+                Using QR Code
+            </p>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<main class="main-content">
+
+
+    <!-- WELCOME -->
+
+    <section class="welcome-section">
+
+        <div>
+
+            <p class="welcome-small">
+                Account & Preferences
+            </p>
+
+            <h2>
+                ⚙️ Settings
+            </h2>
+
+            <p class="welcome-text">
+                Manage your account and reminder preferences.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= SETTINGS GRID ================= -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- PROFILE -->
+
+        <div class="medicine-details">
+
+
+            <div class="section-title">
+
+                <div class="title-icon">
+                    👤
+                </div>
+
+                <h2>
+                    Profile Settings
+                </h2>
+
+            </div>
+
+
+
+            <div class="details-list">
+
+
+                <div class="detail-row">
+
+                    <span class="detail-icon">
+                        👤
+                    </span>
+
+                    <strong>
+                        Username
+                    </strong>
+
+                    <span>
+                        :
+                    </span>
+
+                    <span id="username">
+                        Patient
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-icon">
+                        🔐
+                    </span>
+
+                    <strong>
+                        Account Status
+                    </strong>
+
+                    <span>
+                        :
+                    </span>
+
+                    <span>
+                        Active
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- REMINDER SETTINGS -->
+
+        <div class="medicine-details">
+
+
+            <div class="section-title">
+
+                <div class="title-icon">
+                    🔔
+                </div>
+
+                <h2>
+                    Reminder Settings
+                </h2>
+
+            </div>
+
+
+
+            <div class="details-list">
+
+
+                <!-- NOTIFICATION -->
+
+                <div class="detail-row">
+
+                    <span class="detail-icon">
+                        🔔
+                    </span>
+
+                    <strong>
+                        Medicine Notifications
+                    </strong>
+
+                    <span>
+                        :
+                    </span>
+
+                    <button
+                        onclick="toggleNotification()"
+                        id="notificationBtn">
+
+                        ON
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- SOUND -->
+
+                <div class="detail-row">
+
+                    <span class="detail-icon">
+                        🔊
+                    </span>
+
+                    <strong>
+                        Sound Alert
+                    </strong>
+
+                    <span>
+                        :
+                    </span>
+
+                    <button
+                        onclick="toggleSound()"
+                        id="soundBtn">
+
+                        ON
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ================= STATUS ================= -->
+
+    <div class="tip-box">
+
+        💡
+
+        <strong>
+            Tip:
+        </strong>
+
+        <span>
+            Keep medicine notifications ON so you don't miss your reminders.
+        </span>
+
+    </div>
+
+
+
+    <!-- ================= BACK ================= -->
+
+    <button class="logout-btn"
+            onclick="window.location.href='index.html'">
+
+        🏠 Back to Dashboard
+
+    </button>
+
+
+</main>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+
+// ==================================================
+// CHECK LOGIN
+// ==================================================
+
+const loggedInUser =
+    localStorage.getItem("loggedInUser");
+
+
+if (!loggedInUser) {
+
+    alert(
+        "Please login first."
+    );
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+
+// ==================================================
+// SHOW USERNAME
+// ==================================================
+
+document.getElementById(
+    "username"
+).textContent =
+    loggedInUser;
+
+
+
+// ==================================================
+// USER-SPECIFIC SETTINGS KEYS
+// ==================================================
+
+const notificationKey =
+    "notification_" +
+    loggedInUser;
+
+
+const soundKey =
+    "sound_" +
+    loggedInUser;
+
+
+
+// ==================================================
+// GET NOTIFICATION SETTING
+// ==================================================
+
+let notification =
+    localStorage.getItem(
+        notificationKey
+    );
+
+
+if (notification === null) {
+
+    notification =
+        "ON";
+
+    localStorage.setItem(
+        notificationKey,
+        notification
+    );
+
+}
+
+
+
+// ==================================================
+// GET SOUND SETTING
+// ==================================================
+
+let sound =
+    localStorage.getItem(
+        soundKey
+    );
+
+
+if (sound === null) {
+
+    sound =
+        "ON";
+
+    localStorage.setItem(
+        soundKey,
+        sound
+    );
+
+}
+
+
+
+// ==================================================
+// DISPLAY SETTINGS
+// ==================================================
+
+document.getElementById(
+    "notificationBtn"
+).textContent =
+    notification;
+
+
+document.getElementById(
+    "soundBtn"
+).textContent =
+    sound;
+
+
+
+// ==================================================
+// TOGGLE NOTIFICATION
+// ==================================================
+
+function toggleNotification() {
+
+
+    notification =
+        notification === "ON"
+        ? "OFF"
+        : "ON";
+
+
+    localStorage.setItem(
+        notificationKey,
+        notification
+    );
+
+
+    document.getElementById(
+        "notificationBtn"
+    ).textContent =
+        notification;
+
+
+    alert(
+        "Medicine Notifications: " +
+        notification
+    );
+
+}
+
+
+
+// ==================================================
+// TOGGLE SOUND
+// ==================================================
+
+function toggleSound() {
+
+
+    sound =
+        sound === "ON"
+        ? "OFF"
+        : "ON";
+
+
+    localStorage.setItem(
+        soundKey,
+        sound
+    );
+
+
+    document.getElementById(
+        "soundBtn"
+    ).textContent =
+        sound;
+
+
+    alert(
+        "Sound Alert: " +
+        sound
+    );
+
+}
+
+</script>
+
+
+</body>
+
+</html>

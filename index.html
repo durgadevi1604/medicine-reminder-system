@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Medicine Reminder System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- ================= LOGO STYLE ================= -->
+    <style>
+        .project-logo {
+            width: 115px;
+            height: 115px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-section-text h1 {
+            margin: 0;
+        }
+
+        .logo-section-text p {
+            margin: 4px 0 0;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+    <div class="logo-section">
+
+        <!-- PROJECT LOGO -->
+        <img
+            src="logo.png"
+            alt="Medicine Reminder System Logo"
+            class="project-logo"
+        >
+
+        <div class="logo-section-text">
+
+            <h1>
+                Medicine Reminder System
+            </h1>
+
+            <p>
+                Using QR Code
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="profile-section">
+
+        <!-- NOTIFICATION BELL -->
+
+        <div class="notification"
+             onclick="showNotifications()"
+             style="cursor: pointer;">
+
+            🔔
+
+            <span id="notificationCount">0</span>
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <div class="profile">
+
+            👩🏻
+
+            <div>
+
+                <strong id="profileUsername">
+                    Patient
+                </strong>
+
+                <small>Patient</small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ================= MAIN LAYOUT ================= -->
+
+<div class="dashboard-layout">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+
+        <button class="side-btn active"
+                onclick="window.location.href='index.html'">
+
+            🏠
+
+            <span>Dashboard</span>
+
+        </button>
+
+
+        <button class="side-btn"
+                onclick="window.location.href='add-medicine.html'">
+
+            💊
+
+            <span>Add Medicine</span>
+
+        </button>
+
+
+        <button class="side-btn"
+                onclick="window.location.href='medicine-list.html'">
+
+            💊
+
+            <span>My Medicines</span>
+
+        </button>
+
+
+        <button class="side-btn"
+                onclick="window.location.href='scanner.html'">
+
+            📷
+
+            <span>Scan QR Code</span>
+
+        </button>
+
+
+        <!-- SIDEBAR NOTIFICATION -->
+
+        <div class="notification"
+             onclick="showNotifications()"
+             style="cursor: pointer;">
+
+            🔔
+
+            <span id="sidebarNotificationCount">0</span>
+
+        </div>
+
+
+        <!-- REPORTS -->
+
+        <button class="side-btn"
+                onclick="window.location.href='reports.html'">
+
+            📊
+
+            <span>Reports</span>
+
+        </button>
+
+
+        <!-- SETTINGS -->
+
+        <button class="side-btn"
+                onclick="window.location.href='settings.html'">
+
+            ⚙️
+
+            <span>Settings</span>
+
+        </button>
+
+
+        <!-- HELP -->
+
+        <button class="side-btn"
+                onclick="window.location.href='help.html'">
+
+            ❓
+
+            <span>Help & Support</span>
+
+        </button>
+
+
+        <!-- HEALTH CARD -->
+
+        <div class="health-card">
+
+            <div class="health-icon">
+                🛡️
+            </div>
+
+            <h3>
+                Stay Healthy<br>
+                Stay Happy
+            </h3>
+
+            <p>
+                Take your medicine<br>
+                on time and<br>
+                live a healthy life.
+            </p>
+
+            <div class="heartbeat">
+                ──╱╲──╱╲──
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================= CONTENT ================= -->
+
+    <main class="main-content">
+
+
+        <!-- ================= WELCOME ================= -->
+
+        <section class="welcome-section">
+
+            <div>
+
+                <p class="welcome-small">
+                    Welcome back,
+                </p>
+
+                <h2 id="welcomeMessage">
+                    Patient 👋
+                </h2>
+
+                <p class="welcome-text">
+                    Manage your medicines and never miss a dose.
+                </p>
+
+            </div>
+
+            <div class="medicine-decoration">
+                💊 🧴 💊
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= QUICK ACTIONS ================= -->
+
+        <section class="quick-actions">
+
+
+            <!-- ADD MEDICINE -->
+
+            <div class="action-card add-card"
+                 onclick="window.location.href='add-medicine.html'">
+
+                <div class="action-icon green">
+                    +
+                </div>
+
+                <div class="action-content">
+
+                    <h3>
+                        Add Medicine
+                    </h3>
+
+                    <p>
+                        Add new medicine<br>
+                        and set reminder
+                    </p>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+            </div>
+
+
+
+            <!-- MY MEDICINES -->
+
+            <div class="action-card medicine-card"
+                 onclick="window.location.href='medicine-list.html'">
+
+                <div class="action-icon purple">
+                    💊
+                </div>
+
+                <div class="action-content">
+
+                    <h3>
+                        My Medicines
+                    </h3>
+
+                    <p>
+                        View all your<br>
+                        medicines
+                    </p>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+            </div>
+
+
+
+            <!-- SCAN QR -->
+
+            <div class="action-card qr-card"
+                 onclick="window.location.href='scanner.html'">
+
+                <div class="action-icon blue">
+                    ▣
+                </div>
+
+                <div class="action-content">
+
+                    <h3>
+                        Scan QR Code
+                    </h3>
+
+                    <p>
+                        Scan medicine QR<br>
+                        to get details
+                    </p>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= LOWER SECTION ================= -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- ================= MEDICINE DETAILS ================= -->
+
+            <div class="medicine-details">
+
+                <div class="section-title">
+
+                    <div class="title-icon">
+                        💊
+                    </div>
+
+                    <h2>
+                        Medicine Details
+                    </h2>
+
+                </div>
+
+
+                <div class="medicine-info">
+
+
+                    <div class="medicine-image">
+                        💊
+                    </div>
+
+
+                    <div class="details-list">
+
+
+                        <!-- NAME -->
+
+                        <div class="detail-row">
+
+                            <span class="detail-icon">
+                                👤
+                            </span>
+
+                            <strong>
+                                Name
+                            </strong>
+
+                            <span>
+                                :
+                            </span>
+
+                            <span id="name">
+                                -
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- DOSAGE -->
+
+                        <div class="detail-row">
+
+                            <span class="detail-icon">
+                                💊
+                            </span>
+
+                            <strong>
+                                Dosage
+                            </strong>
+
+                            <span>
+                                :
+                            </span>
+
+                            <span id="dose">
+                                -
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- TIME -->
+
+                        <div class="detail-row">
+
+                            <span class="detail-icon">
+                                🕐
+                            </span>
+
+                            <strong>
+                                Time
+                            </strong>
+
+                            <span>
+                                :
+                            </span>
+
+                            <span id="time">
+                                -
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- START DATE -->
+
+                        <div class="detail-row">
+
+                            <span class="detail-icon">
+                                📅
+                            </span>
+
+                            <strong>
+                                Start Date
+                            </strong>
+
+                            <span>
+                                :
+                            </span>
+
+                            <span id="startDate">
+                                -
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- END DATE -->
+
+                        <div class="detail-row">
+
+                            <span class="detail-icon">
+                                📅
+                            </span>
+
+                            <strong>
+                                End Date
+                            </strong>
+
+                            <span>
+                                :
+                            </span>
+
+                            <span id="endDate">
+                                -
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <button class="save-btn"
+                        onclick="saveReminder()">
+
+                    🔔 Save Reminder
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================= UPCOMING REMINDER ================= -->
+
+            <div class="reminder-card">
+
+                <div class="reminder-title">
+
+                    🕐
+
+                    <strong>
+                        Upcoming Reminder
+                    </strong>
+
+                </div>
+
+
+                <h2 id="upcomingTime">
+                    -
+                </h2>
+
+
+                <p id="upcomingMedicine">
+                    No medicine added
+                </p>
+
+
+                <strong class="today"
+                        id="upcomingDate">
+
+                    -
+
+                </strong>
+
+
+                <div class="bell-large">
+                    🔔
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= TIP ================= -->
+
+        <div class="tip-box">
+
+            💡
+
+            <strong>
+                Tip:
+            </strong>
+
+            <span>
+                Take your medicines on time for a healthier life!
+            </span>
+
+        </div>
+
+
+
+        <!-- ================= LOGOUT ================= -->
+
+        <button class="logout-btn"
+                onclick="logout()">
+
+            🚪 Logout
+
+        </button>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="script.js"></script>
+
+
+<script>
+
+
+// ==================================================
+// CHECK LOGIN
+// ==================================================
+
+let loggedInUser =
+    localStorage.getItem("loggedInUser");
+
+
+if (!loggedInUser) {
+
+    alert("Please login first.");
+
+    window.location.href =
+        "login.html";
+
+}
+else {
+
+    document.getElementById(
+        "welcomeMessage"
+    ).textContent =
+        loggedInUser + " 👋";
+
+
+    document.getElementById(
+        "profileUsername"
+    ).textContent =
+        loggedInUser;
+
+}
+
+
+
+// ==================================================
+// GET CURRENT PATIENT MEDICINES
+// ==================================================
+
+function getMyMedicines() {
+
+    const medicines =
+        JSON.parse(
+            localStorage.getItem("medicines")
+        ) || [];
+
+
+    const currentUser =
+        localStorage.getItem("loggedInUser");
+
+
+    return medicines.filter(
+        medicine =>
+            medicine.username === currentUser
+    );
+
+}
+
+
+
+// ==================================================
+// UPDATE NOTIFICATION COUNT
+// ==================================================
+
+function updateNotificationCount() {
+
+    const myMedicines =
+        getMyMedicines();
+
+
+    const count =
+        myMedicines.length;
+
+
+    const notificationCount =
+        document.getElementById(
+            "notificationCount"
+        );
+
+
+    const sidebarCount =
+        document.getElementById(
+            "sidebarNotificationCount"
+        );
+
+
+    if (notificationCount) {
+
+        notificationCount.textContent =
+            count;
+
+    }
+
+
+    if (sidebarCount) {
+
+        sidebarCount.textContent =
+            count;
+
+    }
+
+}
+
+
+
+// ==================================================
+// SHOW NOTIFICATIONS
+// ==================================================
+
+function showNotifications() {
+
+    const myMedicines =
+        getMyMedicines();
+
+
+    if (myMedicines.length === 0) {
+
+        alert(
+            "🔔 No medicine reminders found!"
+        );
+
+        return;
+
+    }
+
+
+    let notificationMessage =
+        "🔔 Your Medicine Reminders\n\n";
+
+
+    myMedicines.forEach(
+        (medicine, index) => {
+
+            notificationMessage +=
+                (index + 1) +
+                ". " +
+                medicine.medicine +
+                "\n";
+
+
+            notificationMessage +=
+                "   Dosage: " +
+                medicine.dosage +
+                "\n";
+
+
+            notificationMessage +=
+                "   Time: " +
+                medicine.time +
+                "\n";
+
+
+            if (medicine.start) {
+
+                notificationMessage +=
+                    "   Start: " +
+                    medicine.start +
+                    "\n";
+
+            }
+
+
+            if (medicine.end) {
+
+                notificationMessage +=
+                    "   End: " +
+                    medicine.end +
+                    "\n";
+
+            }
+
+
+            notificationMessage +=
+                "\n";
+
+        }
+    );
+
+
+    alert(
+        notificationMessage
+    );
+
+}
+
+
+
+// ==================================================
+// AUTOMATIC MEDICINE REMINDER
+// ==================================================
+
+function checkMedicineReminders() {
+
+    const myMedicines =
+        getMyMedicines();
+
+
+    if (myMedicines.length === 0) {
+
+        return;
+
+    }
+
+
+    const now =
+        new Date();
+
+
+    // Current Date
+
+    const year =
+        now.getFullYear();
+
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
+
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+
+    const today =
+        year +
+        "-" +
+        month +
+        "-" +
+        day;
+
+
+
+    // Current Time
+
+    const currentHour =
+        String(
+            now.getHours()
+        ).padStart(2, "0");
+
+
+    const currentMinute =
+        String(
+            now.getMinutes()
+        ).padStart(2, "0");
+
+
+    const currentTime =
+        currentHour +
+        ":" +
+        currentMinute;
+
+
+
+    // Check Medicines
+
+    myMedicines.forEach(
+        function (medicine) {
+
+
+            // Check Time
+
+            if (
+                medicine.time !==
+                currentTime
+            ) {
+
+                return;
+
+            }
+
+
+
+            // Check Start Date
+
+            if (
+                medicine.start &&
+                today < medicine.start
+            ) {
+
+                return;
+
+            }
+
+
+
+            // Check End Date
+
+            if (
+                medicine.end &&
+                medicine.end !== "Lifelong" &&
+                today > medicine.end
+            ) {
+
+                return;
+
+            }
+
+
+
+            // Prevent Duplicate Alert
+
+            const reminderKey =
+                "reminder_" +
+                loggedInUser +
+                "_" +
+                medicine.medicine +
+                "_" +
+                medicine.time +
+                "_" +
+                today;
+
+
+            if (
+                sessionStorage.getItem(
+                    reminderKey
+                )
+            ) {
+
+                return;
+
+            }
+
+
+
+            // Reminder Alert
+
+            alert(
+                "💊 MEDICINE REMINDER!\n\n" +
+
+                "Medicine: " +
+                medicine.medicine +
+                "\n" +
+
+                "Dosage: " +
+                medicine.dosage +
+                "\n" +
+
+                "Time: " +
+                medicine.time
+            );
+
+
+
+            sessionStorage.setItem(
+                reminderKey,
+                "shown"
+            );
+
+        }
+    );
+
+}
+
+
+
+// ==================================================
+// LOAD LATEST MEDICINE DETAILS
+// ==================================================
+
+function loadLatestMedicine() {
+
+    const myMedicines =
+        getMyMedicines();
+
+
+    if (myMedicines.length === 0) {
+
+        return;
+
+    }
+
+
+    // Get latest medicine
+
+    const medicine =
+        myMedicines[
+            myMedicines.length - 1
+        ];
+
+
+
+    // Medicine Details
+
+    document.getElementById(
+        "name"
+    ).textContent =
+        medicine.medicine || "-";
+
+
+    document.getElementById(
+        "dose"
+    ).textContent =
+        medicine.dosage || "-";
+
+
+    document.getElementById(
+        "time"
+    ).textContent =
+        medicine.time || "-";
+
+
+    document.getElementById(
+        "startDate"
+    ).textContent =
+        medicine.start || "-";
+
+
+    document.getElementById(
+        "endDate"
+    ).textContent =
+        medicine.end || "-";
+
+
+
+    // Upcoming Reminder
+
+    document.getElementById(
+        "upcomingTime"
+    ).textContent =
+        medicine.time || "-";
+
+
+    document.getElementById(
+        "upcomingMedicine"
+    ).textContent =
+        (medicine.medicine || "-") +
+        " - " +
+        (medicine.dosage || "-");
+
+
+    document.getElementById(
+        "upcomingDate"
+    ).textContent =
+        medicine.start || "Today";
+
+}
+
+
+
+// ==================================================
+// START AUTOMATIC REMINDER
+// ==================================================
+
+checkMedicineReminders();
+
+
+setInterval(
+    checkMedicineReminders,
+    60000
+);
+
+
+
+// ==================================================
+// LOGOUT
+// ==================================================
+
+function logout() {
+
+    localStorage.removeItem(
+        "loggedInUser"
+    );
+
+
+    alert(
+        "Logged out successfully!"
+    );
+
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+
+// ==================================================
+// UPDATE NOTIFICATION COUNT
+// ==================================================
+
+updateNotificationCount();
+
+
+// ==================================================
+// LOAD MEDICINE DETAILS
+// ==================================================
+
+loadLatestMedicine();
+
+
+</script>
+
+
+</body>
+
+</html>

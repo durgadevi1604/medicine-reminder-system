@@ -1,0 +1,1641 @@
+/* =========================================
+   MEDICINE REMINDER SYSTEM
+   MODERN DASHBOARD STYLE
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #102a63;
+    min-height: 100vh;
+
+    background:
+        radial-gradient(circle at 20% 20%, rgba(0, 150, 255, 0.12), transparent 25%),
+        radial-gradient(circle at 85% 25%, rgba(0, 200, 180, 0.12), transparent 25%),
+        linear-gradient(135deg, #eef8ff, #e9fbfa);
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================
+   TOP HEADER
+========================================= */
+
+.top-header {
+    height: 110px;
+
+    background: linear-gradient(
+        100deg,
+        #075bea,
+        #0789df,
+        #08b987
+    );
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 35px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+/* =========================================
+   PROJECT LOGO
+========================================= */
+
+.logo-section {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    height: 100%;
+}
+
+.project-logo {
+    width: 105px;
+    height: 105px;
+
+    object-fit: contain;
+
+    display: block;
+
+    flex-shrink: 0;
+}
+
+.logo-section-text {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+.logo-section-text h1 {
+    margin: 0;
+
+    font-size: 31px;
+
+    line-height: 1.15;
+
+    color: white;
+}
+
+.logo-section-text p {
+    margin: 5px 0 0;
+
+    font-size: 17px;
+
+    color: rgba(255, 255, 255, 0.95);
+}
+
+
+/* =========================================
+   PROFILE
+========================================= */
+
+.profile-section {
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+.notification {
+    position: relative;
+
+    width: 55px;
+    height: 55px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    font-size: 27px;
+}
+
+.notification span {
+    position: absolute;
+
+    top: -4px;
+    right: -2px;
+
+    background: #ff3855;
+
+    width: 23px;
+    height: 23px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+.profile {
+    background: rgba(255, 255, 255, 0.92);
+
+    color: #102a63;
+
+    border-radius: 35px;
+
+    padding: 8px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 175px;
+}
+
+.profile > div {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.profile small {
+    color: #718096;
+
+    margin-top: 2px;
+}
+
+
+/* =========================================
+   DASHBOARD LAYOUT
+========================================= */
+
+.dashboard-layout {
+    display: flex;
+
+    min-height: calc(100vh - 110px);
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    width: 245px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    padding: 30px 18px;
+
+    box-shadow: 5px 0 20px rgba(0, 0, 0, 0.08);
+
+    flex-shrink: 0;
+}
+
+.side-btn {
+    width: 100%;
+
+    background: transparent;
+
+    color: #173875;
+
+    border: none;
+
+    box-shadow: none;
+
+    padding: 13px 18px;
+
+    margin: 5px 0;
+
+    border-radius: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    font-size: 16px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.side-btn:hover {
+    background: #edf5ff;
+
+    color: #0766e8;
+
+    transform: translateX(4px);
+
+    box-shadow: none;
+}
+
+.side-btn.active {
+    background: linear-gradient(
+        90deg,
+        #1678ed,
+        #2788ef
+    );
+
+    color: white;
+
+    box-shadow: 0 7px 18px rgba(30, 120, 240, 0.25);
+}
+
+
+/* =========================================
+   HEALTH CARD
+========================================= */
+
+.health-card {
+    margin-top: 35px;
+
+    padding: 22px 15px;
+
+    text-align: center;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #edf5ff,
+            #f8ffff
+        );
+
+    border: 1px solid #dbeafe;
+}
+
+.health-icon {
+    font-size: 43px;
+}
+
+.health-card h3 {
+    color: #075bea;
+
+    line-height: 1.35;
+}
+
+.health-card p {
+    color: #304b82;
+
+    line-height: 1.6;
+}
+
+.heartbeat {
+    color: #1d8ef2;
+
+    font-size: 20px;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.main-content {
+    flex: 1;
+
+    padding: 38px 42px;
+
+    max-width: 1500px;
+
+    margin: auto;
+}
+
+
+/* =========================================
+   WELCOME SECTION
+========================================= */
+
+.welcome-section {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 28px;
+}
+
+.welcome-small {
+    font-size: 22px;
+
+    margin: 0 0 5px;
+}
+
+.welcome-section h2 {
+    margin: 0;
+
+    font-size: 40px;
+
+    color: #0b347a;
+}
+
+.welcome-text {
+    font-size: 17px;
+
+    margin-top: 14px;
+}
+
+.medicine-decoration {
+    font-size: 55px;
+
+    letter-spacing: 20px;
+
+    opacity: 0.85;
+}
+
+
+/* =========================================
+   QUICK ACTION CARDS
+========================================= */
+
+.quick-actions {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 30px;
+}
+
+.action-card {
+    min-height: 140px;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    cursor: pointer;
+
+    position: relative;
+
+    border-top: 3px solid;
+
+    box-shadow:
+        0 7px 22px rgba(0, 0, 0, 0.08);
+
+    transition: 0.3s;
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.add-card {
+    border-color: #05b96b;
+}
+
+.medicine-card {
+    border-color: #6548e8;
+}
+
+.qr-card {
+    border-color: #147cf0;
+}
+
+
+/* =========================================
+   ACTION ICON
+========================================= */
+
+.action-icon {
+    width: 72px;
+    height: 72px;
+
+    border-radius: 15px;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 35px;
+
+    flex-shrink: 0;
+}
+
+.action-icon.green {
+    background: linear-gradient(
+        135deg,
+        #05bd70,
+        #06a85f
+    );
+}
+
+.action-icon.purple {
+    background: linear-gradient(
+        135deg,
+        #7548ee,
+        #5634d4
+    );
+}
+
+.action-icon.blue {
+    background: linear-gradient(
+        135deg,
+        #2387f4,
+        #1169db
+    );
+}
+
+.action-content h3 {
+    margin: 0;
+
+    font-size: 19px;
+}
+
+.action-content p {
+    margin: 10px 0 0;
+
+    line-height: 1.5;
+
+    color: #405783;
+}
+
+.arrow {
+    margin-left: auto;
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 50%;
+
+    background: #edf5ff;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #1678ed;
+
+    font-size: 25px;
+}
+
+
+/* =========================================
+   LOWER DASHBOARD
+========================================= */
+
+.dashboard-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(500px, 2.2fr)
+        minmax(300px, 0.8fr);
+
+    gap: 25px;
+
+    align-items: stretch;
+}
+
+
+/* =========================================
+   MEDICINE DETAILS
+========================================= */
+
+.medicine-details {
+    background: rgba(255, 255, 255, 0.96);
+
+    border-radius: 20px;
+
+    padding: 28px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.08);
+
+    min-width: 0;
+}
+
+.section-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.title-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
+    background: #126bea;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
+}
+
+.section-title h2 {
+    margin: 0;
+
+    font-size: 25px;
+}
+
+
+/* =========================================
+   MEDICINE INFO
+========================================= */
+
+.medicine-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 35px;
+
+    min-width: 0;
+}
+
+.medicine-image {
+    width: 220px;
+    height: 220px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #e8fbf8,
+            #d8f4f5
+        );
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 90px;
+
+    flex-shrink: 0;
+}
+
+.details-list {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.detail-row {
+    display: grid;
+
+    grid-template-columns:
+        45px 115px 20px minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 5px;
+
+    min-height: 52px;
+
+    border-bottom: 1px solid #e4edf7;
+
+    color: #142d64;
+
+    min-width: 0;
+}
+
+.detail-row > span:last-child {
+    min-width: 0;
+
+    overflow-wrap: anywhere;
+}
+
+.detail-icon {
+    width: 35px;
+    height: 35px;
+
+    border-radius: 9px;
+
+    background: #eef8f7;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================================
+   SAVE BUTTON
+========================================= */
+
+.save-btn {
+    display: block;
+
+    margin: 25px auto 0;
+
+    padding: 14px 35px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        #06b96c,
+        #08a85f
+    );
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 14px rgba(0, 180, 100, 0.22);
+
+    transition: 0.3s;
+}
+
+.save-btn:hover {
+    transform: translateY(-3px);
+
+    background: #078f55;
+}
+
+
+/* =========================================
+   UPCOMING REMINDER
+   DASHBOARD ONLY
+========================================= */
+
+.dashboard-grid .reminder-card {
+
+    width: 100%;
+
+    min-width: 0;
+
+    min-height: 240px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ecfcf6,
+            #f8ffff
+        );
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 8px 23px rgba(0, 0, 0, 0.07);
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-left: 5px solid #08ad68;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: flex-start;
+}
+
+
+/* =========================================
+   UPCOMING REMINDER TITLE
+========================================= */
+
+.dashboard-grid .reminder-card .reminder-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    width: 100%;
+
+    color: #07965a;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    line-height: 1.3;
+
+    margin: 0;
+
+    padding: 0;
+}
+
+
+/* If title contains icon */
+
+.dashboard-grid .reminder-card .reminder-title span {
+
+    flex-shrink: 0;
+
+    font-size: 19px;
+}
+
+
+/* =========================================
+   UPCOMING TIME
+========================================= */
+
+.dashboard-grid .reminder-card h2 {
+
+    color: #07965a;
+
+    font-size: 28px;
+
+    margin: 18px 0 8px;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================
+   UPCOMING MEDICINE TEXT
+========================================= */
+
+.dashboard-grid .reminder-card p {
+
+    font-size: 16px;
+
+    color: #173875;
+
+    line-height: 1.5;
+
+    margin: 5px 0;
+
+    max-width: calc(100% - 65px);
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================
+   UPCOMING DATE
+========================================= */
+
+.dashboard-grid .reminder-card .today {
+
+    display: block;
+
+    color: #08a85f;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    margin-top: 5px;
+
+    max-width: calc(100% - 65px);
+
+    overflow-wrap: anywhere;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================
+   UPCOMING REMINDER BELL
+========================================= */
+
+.dashboard-grid .reminder-card .bell-large {
+
+    position: absolute;
+
+    right: 18px;
+
+    bottom: 18px;
+
+    font-size: 52px;
+
+    opacity: 0.13;
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+/* =========================================
+   UPCOMING REMINDER - CONTENT SAFETY
+========================================= */
+
+.dashboard-grid .reminder-card > * {
+
+    min-width: 0;
+}
+
+
+/* =========================================
+   TIP
+========================================= */
+
+.tip-box {
+    margin-top: 25px;
+
+    padding: 17px 25px;
+
+    border-radius: 15px;
+
+    background: #e4f1ff;
+
+    color: #164284;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 15px;
+}
+
+.tip-box:first-letter {
+    font-size: 22px;
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+.logout-btn {
+    display: block;
+
+    margin: 28px auto 10px;
+
+    background: #e73543;
+
+    color: white;
+
+    border: none;
+
+    padding: 13px 38px;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: #c92332;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1100px) {
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .main-content {
+        padding: 30px 25px;
+    }
+
+    .quick-actions {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid .reminder-card {
+        min-height: 220px;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 750px) {
+
+    .top-header {
+        height: auto;
+
+        min-height: 90px;
+
+        padding: 10px 15px;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+    }
+
+    .logo-section {
+        gap: 10px;
+    }
+
+    .project-logo {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .logo-section-text h1 {
+        font-size: 21px;
+    }
+
+    .logo-section-text p {
+        font-size: 13px;
+    }
+
+    .profile-section {
+        margin-left: auto;
+
+        gap: 10px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        padding: 25px 15px;
+    }
+
+    .welcome-section {
+        display: block;
+    }
+
+    .welcome-section h2 {
+        font-size: 32px;
+    }
+
+    .medicine-decoration {
+        margin-top: 20px;
+
+        font-size: 35px;
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .medicine-info {
+        flex-direction: column;
+    }
+
+    .medicine-image {
+        width: 170px;
+        height: 170px;
+
+        font-size: 65px;
+    }
+
+    .detail-row {
+        grid-template-columns:
+            35px 100px 15px minmax(0, 1fr);
+
+        font-size: 14px;
+    }
+
+
+    /* UPCOMING REMINDER MOBILE */
+
+    .dashboard-grid .reminder-card {
+
+        min-height: 220px;
+
+        padding: 22px;
+    }
+
+    .dashboard-grid .reminder-card h2 {
+
+        font-size: 26px;
+
+        margin-top: 15px;
+    }
+
+    .dashboard-grid .reminder-card p {
+
+        max-width: 80%;
+
+        font-size: 15px;
+    }
+
+    .dashboard-grid .reminder-card .today {
+
+        max-width: 80%;
+
+        font-size: 13px;
+    }
+
+    .dashboard-grid .reminder-card .bell-large {
+
+        right: 15px;
+
+        bottom: 15px;
+
+        font-size: 45px;
+    }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 500px) {
+
+    .top-header {
+        padding: 8px 12px;
+    }
+
+    .project-logo {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    .logo-section {
+        gap: 8px;
+    }
+
+    .logo-section-text h1 {
+        font-size: 18px;
+    }
+
+    .logo-section-text p {
+        font-size: 12px;
+    }
+
+    .profile {
+        min-width: auto;
+
+        padding: 7px 12px;
+    }
+
+    .notification {
+        display: none;
+    }
+
+    .welcome-section h2 {
+        font-size: 27px;
+    }
+
+    .action-card {
+        min-height: 125px;
+    }
+
+    .action-icon {
+        width: 60px;
+        height: 60px;
+
+        font-size: 28px;
+    }
+
+    .medicine-details {
+        padding: 20px 15px;
+    }
+
+    .section-title h2 {
+        font-size: 21px;
+    }
+
+    .medicine-image {
+        width: 145px;
+        height: 145px;
+    }
+
+    .detail-row {
+        grid-template-columns:
+            30px 85px 10px minmax(0, 1fr);
+
+        font-size: 13px;
+    }
+
+
+    /* UPCOMING REMINDER SMALL MOBILE */
+
+    .dashboard-grid .reminder-card {
+
+        min-height: 205px;
+
+        padding: 20px;
+    }
+
+    .dashboard-grid .reminder-card .reminder-title {
+
+        font-size: 16px;
+    }
+
+    .dashboard-grid .reminder-card h2 {
+
+        font-size: 24px;
+    }
+
+    .dashboard-grid .reminder-card p {
+
+        max-width: 75%;
+
+        font-size: 14px;
+    }
+
+    .dashboard-grid .reminder-card .today {
+
+        max-width: 75%;
+
+        font-size: 12px;
+    }
+}
+
+
+/* =========================================
+   ADD MEDICINE MODERN PAGE
+========================================= */
+
+.add-medicine-page {
+    min-height: calc(100vh - 110px);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 45px 20px;
+}
+
+.add-medicine-card {
+    width: 520px;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    padding: 35px;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 12px 35px rgba(0, 80, 160, 0.14);
+
+    border: 1px solid #dceeff;
+}
+
+.add-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+}
+
+.add-title-icon {
+    width: 60px;
+    height: 60px;
+
+    border-radius: 16px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 30px;
+
+    background: linear-gradient(
+        135deg,
+        #087cf0,
+        #08b987
+    );
+
+    color: white;
+}
+
+.add-title h2 {
+    margin: 0;
+
+    color: #0b347a;
+
+    font-size: 27px;
+}
+
+.add-title p {
+    margin: 5px 0 0;
+
+    color: #718096;
+}
+
+
+/* =========================================
+   FORM LABEL
+========================================= */
+
+.add-medicine-card label {
+    display: block;
+
+    margin-top: 17px;
+    margin-bottom: 7px;
+
+    font-weight: bold;
+
+    color: #173875;
+}
+
+
+/* =========================================
+   FORM INPUT
+========================================= */
+
+.add-medicine-card input {
+    width: 100%;
+
+    padding: 13px;
+
+    border: 1px solid #cbdff2;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    background: #fafdff;
+}
+
+.add-medicine-card input:focus {
+    border-color: #1680ed;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 128, 237, 0.12);
+}
+
+
+/* =========================================
+   SAVE MEDICINE BUTTON
+========================================= */
+
+.medicine-save-btn {
+    width: 100%;
+
+    margin: 25px 0 15px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    background: linear-gradient(
+        135deg,
+        #06b96c,
+        #08a85f
+    );
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 15px rgba(0, 180, 100, 0.20);
+
+    position: relative;
+
+    z-index: 9999;
+
+    pointer-events: auto !important;
+}
+
+.medicine-save-btn:hover {
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   QR CODE
+========================================= */
+
+#qrcode {
+    background: white;
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+    width: fit-content;
+
+    margin: 20px auto;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================
+   VIEW MEDICINES
+========================================= */
+
+.view-medicine-btn {
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #6548e8;
+
+    color: white;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+.back-btn {
+    width: 100%;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #edf5ff;
+
+    color: #126bea;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background: #dcecff;
+}
+
+
+/* =========================================
+   ADD MEDICINE MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .add-medicine-page {
+        padding: 25px 15px;
+    }
+
+    .add-medicine-card {
+        width: 100%;
+
+        padding: 25px;
+    }
+
+    .add-title h2 {
+        font-size: 22px;
+    }
+}
+
+
+/* =========================================
+   REMINDER PAGE
+========================================= */
+
+.reminder-page {
+    width: 90%;
+
+    max-width: 950px;
+
+    margin: 40px auto;
+
+    text-align: center;
+}
+
+.reminder-page h2 {
+    color: #0b347a;
+
+    font-size: 30px;
+
+    margin-bottom: 5px;
+}
+
+.reminder-subtitle {
+    color: #64748b;
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================================
+   REMINDER CARD
+   REMINDERS PAGE ONLY
+========================================= */
+
+.reminder-page .reminder-card {
+
+    background: rgba(255, 255, 255, 0.97);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    text-align: left;
+
+    padding: 22px;
+
+    margin: 18px 0;
+
+    border-radius: 18px;
+
+    border-left: 5px solid #08ad68;
+
+    box-shadow:
+        0 7px 22px rgba(0, 0, 0, 0.10);
+}
+
+.reminder-icon {
+    width: 70px;
+    height: 70px;
+
+    border-radius: 18px;
+
+    background: #e8f8f3;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 38px;
+
+    flex-shrink: 0;
+}
+
+.reminder-info {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.reminder-info h3 {
+    margin: 0 0 10px;
+
+    color: #0b347a;
+
+    font-size: 22px;
+}
+
+.reminder-info p {
+    margin: 6px 0;
+
+    color: #475569;
+}
+
+.reminder-status {
+    background: #e7f9ef;
+
+    color: #078c53;
+
+    padding: 9px 14px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   NO REMINDER
+========================================= */
+
+.no-reminder {
+    background: white;
+
+    padding: 45px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 7px 22px rgba(0, 0, 0, 0.08);
+}
+
+.big-bell {
+    font-size: 60px;
+}
+
+.no-reminder h3 {
+    color: #0b347a;
+}
+
+.no-reminder p {
+    color: #64748b;
+}
+
+
+/* =========================================
+   REMINDER MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .reminder-page {
+        width: 94%;
+    }
+
+    .reminder-page .reminder-card {
+
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .reminder-status {
+        width: fit-content;
+    }
+}
