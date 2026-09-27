@@ -14,22 +14,14 @@
 
     <style>
 
-        /* ==================================================
-           REPORT PAGE
-        ================================================== */
-
         .report-page {
             width: 100%;
             max-width: 1100px;
             margin: 0 auto;
         }
 
-
-        /* ==================================================
-           REPORT SUMMARY CARD
-        ================================================== */
-
-        .report-summary-card {
+        .report-summary-card,
+        .medicine-report-card {
 
             background: #ffffff;
 
@@ -44,8 +36,8 @@
 
         }
 
-
-        .report-summary-title {
+        .report-summary-title,
+        .medicine-report-title {
 
             display: flex;
 
@@ -57,8 +49,8 @@
 
         }
 
-
-        .report-summary-icon {
+        .report-summary-icon,
+        .medicine-report-title-icon {
 
             width: 48px;
             height: 48px;
@@ -79,8 +71,8 @@
 
         }
 
-
-        .report-summary-title h2 {
+        .report-summary-title h2,
+        .medicine-report-title h2 {
 
             margin: 0;
 
@@ -89,11 +81,6 @@
             font-size: 25px;
 
         }
-
-
-        /* ==================================================
-           SUMMARY INFORMATION
-        ================================================== */
 
         .report-info-grid {
 
@@ -105,7 +92,6 @@
             gap: 15px;
 
         }
-
 
         .report-info-box {
 
@@ -119,7 +105,6 @@
 
         }
 
-
         .report-info-box span {
 
             display: block;
@@ -132,7 +117,6 @@
 
         }
 
-
         .report-info-box strong {
 
             font-size: 20px;
@@ -141,75 +125,6 @@
 
         }
 
-
-        /* ==================================================
-           MEDICINE SUMMARY
-        ================================================== */
-
-        .medicine-report-card {
-
-            background: #ffffff;
-
-            border-radius: 18px;
-
-            padding: 28px;
-
-            margin-top: 25px;
-
-            box-shadow:
-                0 8px 25px rgba(0, 80, 150, 0.10);
-
-        }
-
-
-        .medicine-report-title {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 14px;
-
-            margin-bottom: 25px;
-
-        }
-
-
-        .medicine-report-title-icon {
-
-            width: 48px;
-            height: 48px;
-
-            border-radius: 50%;
-
-            background: #1677ff;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 24px;
-
-        }
-
-
-        .medicine-report-title h2 {
-
-            margin: 0;
-
-            color: #103a75;
-
-            font-size: 25px;
-
-        }
-
-
-        /* ==================================================
-           TABLE
-        ================================================== */
-
         .medicine-table-wrapper {
 
             width: 100%;
@@ -217,7 +132,6 @@
             overflow-x: auto;
 
         }
-
 
         .medicine-table {
 
@@ -229,13 +143,11 @@
 
         }
 
-
         .medicine-table thead {
 
             background: #edf5ff;
 
         }
-
 
         .medicine-table th {
 
@@ -253,7 +165,6 @@
 
         }
 
-
         .medicine-table td {
 
             padding: 16px 14px;
@@ -268,13 +179,11 @@
 
         }
 
-
         .medicine-table tbody tr:hover {
 
             background: #f8fbff;
 
         }
-
 
         .medicine-number {
 
@@ -286,7 +195,6 @@
 
         }
 
-
         .medicine-name {
 
             font-weight: 700;
@@ -294,7 +202,6 @@
             color: #103a75 !important;
 
         }
-
 
         .dosage-value {
 
@@ -304,24 +211,17 @@
 
         }
 
-
         .time-value {
 
             font-weight: 600;
 
         }
 
-
         .date-value {
 
             white-space: nowrap;
 
         }
-
-
-        /* ==================================================
-           STATUS
-        ================================================== */
 
         .status-badge {
 
@@ -337,7 +237,6 @@
 
         }
 
-
         .status-active {
 
             background: #e6f8ee;
@@ -346,7 +245,6 @@
 
         }
 
-
         .status-completed {
 
             background: #ffe8e8;
@@ -354,11 +252,6 @@
             color: #d33b3b;
 
         }
-
-
-        /* ==================================================
-           NO MEDICINE
-        ================================================== */
 
         .no-medicine {
 
@@ -374,7 +267,6 @@
 
         }
 
-
         .no-medicine-icon {
 
             font-size: 45px;
@@ -382,7 +274,6 @@
             margin-bottom: 10px;
 
         }
-
 
         .no-medicine h3 {
 
@@ -392,10 +283,15 @@
 
         }
 
+        .loading-report {
 
-        /* ==================================================
-           BACK BUTTON
-        ================================================== */
+            text-align: center;
+
+            padding: 40px;
+
+            color: #607899;
+
+        }
 
         .report-back-btn {
 
@@ -421,7 +317,6 @@
 
         }
 
-
         .report-back-btn:hover {
 
             background: #d92539;
@@ -429,11 +324,6 @@
             transform: translateY(-1px);
 
         }
-
-
-        /* ==================================================
-           MOBILE
-        ================================================== */
 
         @media (max-width: 700px) {
 
@@ -504,10 +394,6 @@
 <main class="main-content report-page">
 
 
-    <!-- ==================================================
-         WELCOME
-    ================================================== -->
-
     <section class="welcome-section">
 
         <div>
@@ -536,7 +422,6 @@
 
     <section class="report-summary-card">
 
-
         <div class="report-summary-title">
 
             <div class="report-summary-icon">
@@ -554,11 +439,7 @@
         </div>
 
 
-
         <div class="report-info-grid">
-
-
-            <!-- PATIENT -->
 
             <div class="report-info-box">
 
@@ -573,8 +454,6 @@
             </div>
 
 
-            <!-- TOTAL -->
-
             <div class="report-info-box">
 
                 <span>
@@ -587,8 +466,6 @@
 
             </div>
 
-
-            <!-- ACTIVE -->
 
             <div class="report-info-box">
 
@@ -603,8 +480,6 @@
             </div>
 
 
-            <!-- COMPLETED -->
-
             <div class="report-info-box">
 
                 <span>
@@ -617,7 +492,6 @@
 
             </div>
 
-
         </div>
 
     </section>
@@ -629,7 +503,6 @@
     ================================================== -->
 
     <section class="medicine-report-card">
-
 
         <div class="medicine-report-title">
 
@@ -647,9 +520,6 @@
 
         </div>
 
-
-
-        <!-- TABLE -->
 
         <div class="medicine-table-wrapper">
 
@@ -694,14 +564,22 @@
 
                 <tbody id="reportMedicineList">
 
-                    <!-- Medicines will appear here -->
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="loading-report"
+                        >
+                            ⏳ Loading medicines...
+                        </td>
+
+                    </tr>
 
                 </tbody>
 
             </table>
 
         </div>
-
 
     </section>
 
@@ -724,11 +602,14 @@
 
 
 
-<!-- ==================================================
-     JAVASCRIPT
-================================================== -->
-
 <script>
+
+// ==================================================
+// RAILWAY BACKEND
+// ==================================================
+
+const API_URL =
+    "https://medicine-reminder-system-production.up.railway.app";
 
 
 // ==================================================
@@ -749,7 +630,6 @@ if (!loggedInUser) {
 }
 
 
-
 // ==================================================
 // PATIENT NAME
 // ==================================================
@@ -758,45 +638,6 @@ document.getElementById(
     "patientName"
 ).textContent =
     loggedInUser || "Patient";
-
-
-
-// ==================================================
-// GET MEDICINES
-// ==================================================
-
-const allMedicines =
-    JSON.parse(
-        localStorage.getItem("medicines")
-    ) || [];
-
-
-
-// ==================================================
-// GET CURRENT USER MEDICINES
-// ==================================================
-
-const myMedicines =
-    allMedicines.filter(
-        function (medicine) {
-
-            return medicine.username ===
-                   loggedInUser;
-
-        }
-    );
-
-
-
-// ==================================================
-// TOTAL MEDICINES
-// ==================================================
-
-document.getElementById(
-    "totalMedicines"
-).textContent =
-    myMedicines.length;
-
 
 
 // ==================================================
@@ -819,7 +660,6 @@ const todayString =
     ).padStart(2, "0");
 
 
-
 // ==================================================
 // DATE FORMAT
 // ==================================================
@@ -834,10 +674,8 @@ function formatDate(date) {
 
 
     let dateString =
-        date.toString();
+        String(date);
 
-
-    // ISO date
 
     if (
         dateString.includes("T")
@@ -851,8 +689,6 @@ function formatDate(date) {
 
     }
 
-
-    // YYYY-MM-DD
 
     if (
         /^\d{4}-\d{2}-\d{2}$/.test(
@@ -882,7 +718,6 @@ function formatDate(date) {
 }
 
 
-
 // ==================================================
 // TIME FORMAT
 // ==================================================
@@ -897,11 +732,13 @@ function formatTime(time) {
 
 
     const parts =
-        time.toString().split(":");
+        String(time)
+            .substring(0, 5)
+            .split(":");
 
 
     let hour =
-        parseInt(parts[0]);
+        parseInt(parts[0], 10);
 
 
     const minute =
@@ -910,19 +747,12 @@ function formatTime(time) {
 
     const ampm =
         hour >= 12
-        ? "PM"
-        : "AM";
+            ? "PM"
+            : "AM";
 
 
     hour =
-        hour % 12;
-
-
-    if (hour === 0) {
-
-        hour = 12;
-
-    }
+        hour % 12 || 12;
 
 
     return (
@@ -936,7 +766,6 @@ function formatTime(time) {
 }
 
 
-
 // ==================================================
 // GET END DATE
 // ==================================================
@@ -944,8 +773,7 @@ function formatTime(time) {
 function getEndDate(medicine) {
 
     if (
-        !medicine.end ||
-        medicine.end === "Lifelong"
+        !medicine.end_date
     ) {
 
         return "Lifelong";
@@ -953,10 +781,11 @@ function getEndDate(medicine) {
     }
 
 
-    return medicine.end;
+    return String(
+        medicine.end_date
+    ).substring(0, 10);
 
 }
-
 
 
 // ==================================================
@@ -964,6 +793,12 @@ function getEndDate(medicine) {
 // ==================================================
 
 function isActive(medicine) {
+
+    const startDate =
+        String(
+            medicine.start_date || ""
+        ).substring(0, 10);
+
 
     const endDate =
         getEndDate(medicine);
@@ -978,228 +813,342 @@ function isActive(medicine) {
     }
 
 
+    if (
+        startDate &&
+        todayString < startDate
+    ) {
+
+        return false;
+
+    }
+
+
     return todayString <= endDate;
 
 }
 
 
-
 // ==================================================
-// ACTIVE / COMPLETED
-// ==================================================
-
-let activeCount = 0;
-
-let completedCount = 0;
-
-
-myMedicines.forEach(
-    function (medicine) {
-
-        if (
-            isActive(medicine)
-        ) {
-
-            activeCount++;
-
-        }
-        else {
-
-            completedCount++;
-
-        }
-
-    }
-);
-
-
-
-document.getElementById(
-    "activeReminders"
-).textContent =
-    activeCount;
-
-
-document.getElementById(
-    "completedMedicines"
-).textContent =
-    completedCount;
-
-
-
-// ==================================================
-// DISPLAY MEDICINES
+// LOAD REPORT
 // ==================================================
 
-const reportList =
-    document.getElementById(
-        "reportMedicineList"
-    );
+async function loadReport() {
+
+    const reportList =
+        document.getElementById(
+            "reportMedicineList"
+        );
 
 
+    try {
 
-if (
-    myMedicines.length === 0
-) {
-
-    reportList.innerHTML = `
-
-        <tr>
-
-            <td
-                colspan="7"
-                style="
-                    padding:0;
-                    border:none;
-                "
-            >
-
-                <div class="no-medicine">
-
-                    <div class="no-medicine-icon">
-                        💊
-                    </div>
-
-                    <h3>
-                        No Medicines Found
-                    </h3>
-
-                    <p>
-                        Add a medicine to generate your report.
-                    </p>
-
-                </div>
-
-            </td>
-
-        </tr>
-
-    `;
-
-}
-else {
+        const response =
+            await fetch(
+                `${API_URL}/api/medicines`
+            );
 
 
-    myMedicines.forEach(
-        function (
-            medicine,
-            index
-        ) {
+        if (!response.ok) {
 
-
-            const active =
-                isActive(medicine);
-
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            row.innerHTML = `
-
-                <!-- S.NO -->
-
-                <td
-                    class="medicine-number"
-                >
-                    ${index + 1}
-                </td>
-
-
-                <!-- MEDICINE -->
-
-                <td
-                    class="medicine-name"
-                >
-                    💊
-                    ${medicine.medicine || "-"}
-                </td>
-
-
-                <!-- DOSAGE -->
-
-                <td
-                    class="dosage-value"
-                >
-                    ${medicine.dosage || "-"}
-                </td>
-
-
-                <!-- TIME -->
-
-                <td
-                    class="time-value"
-                >
-                    ⏰
-                    ${formatTime(
-                        medicine.time ||
-                        medicine.reminder_time
-                    )}
-                </td>
-
-
-                <!-- START -->
-
-                <td
-                    class="date-value"
-                >
-                    ${formatDate(
-                        medicine.start ||
-                        medicine.start_date
-                    )}
-                </td>
-
-
-                <!-- END -->
-
-                <td
-                    class="date-value"
-                >
-                    ${formatDate(
-                        medicine.end ||
-                        medicine.end_date
-                    )}
-                </td>
-
-
-                <!-- STATUS -->
-
-                <td>
-
-                    <span
-                        class="
-                            status-badge
-                            ${
-                                active
-                                ? "status-active"
-                                : "status-completed"
-                            }
-                        "
-                    >
-
-                        ${
-                            active
-                            ? "Active"
-                            : "Completed"
-                        }
-
-                    </span>
-
-                </td>
-
-            `;
-
-
-            reportList.appendChild(
-                row
+            throw new Error(
+                "Failed to load medicines."
             );
 
         }
-    );
+
+
+        const allMedicines =
+            await response.json();
+
+
+        // ======================================
+        // CURRENT USER MEDICINES
+        // ======================================
+
+        const myMedicines =
+            allMedicines.filter(
+                function (medicine) {
+
+                    return (
+                        medicine.username ===
+                        loggedInUser
+                    );
+
+                }
+            );
+
+
+        // ======================================
+        // TOTAL
+        // ======================================
+
+        document.getElementById(
+            "totalMedicines"
+        ).textContent =
+            myMedicines.length;
+
+
+        // ======================================
+        // ACTIVE / COMPLETED
+        // ======================================
+
+        let activeCount = 0;
+
+        let completedCount = 0;
+
+
+        myMedicines.forEach(
+            function (medicine) {
+
+                if (
+                    isActive(medicine)
+                ) {
+
+                    activeCount++;
+
+                }
+                else {
+
+                    completedCount++;
+
+                }
+
+            }
+        );
+
+
+        document.getElementById(
+            "activeReminders"
+        ).textContent =
+            activeCount;
+
+
+        document.getElementById(
+            "completedMedicines"
+        ).textContent =
+            completedCount;
+
+
+        // ======================================
+        // NO MEDICINES
+        // ======================================
+
+        if (
+            myMedicines.length === 0
+        ) {
+
+            reportList.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        style="
+                            padding:0;
+                            border:none;
+                        "
+                    >
+
+                        <div class="no-medicine">
+
+                            <div class="no-medicine-icon">
+                                💊
+                            </div>
+
+                            <h3>
+                                No Medicines Found
+                            </h3>
+
+                            <p>
+                                Add a medicine to generate your report.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        // ======================================
+        // DISPLAY MEDICINES
+        // ======================================
+
+        reportList.innerHTML = "";
+
+
+        myMedicines.forEach(
+            function (
+                medicine,
+                index
+            ) {
+
+                const active =
+                    isActive(medicine);
+
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML = `
+
+                    <td
+                        class="medicine-number"
+                    >
+                        ${index + 1}
+                    </td>
+
+
+                    <td
+                        class="medicine-name"
+                    >
+                        💊
+                        ${escapeHTML(
+                            medicine.medicine_name || "-"
+                        )}
+                    </td>
+
+
+                    <td
+                        class="dosage-value"
+                    >
+                        ${escapeHTML(
+                            medicine.dosage || "-"
+                        )}
+                    </td>
+
+
+                    <td
+                        class="time-value"
+                    >
+                        ⏰
+                        ${formatTime(
+                            medicine.reminder_time
+                        )}
+                    </td>
+
+
+                    <td
+                        class="date-value"
+                    >
+                        ${formatDate(
+                            medicine.start_date
+                        )}
+                    </td>
+
+
+                    <td
+                        class="date-value"
+                    >
+                        ${
+                            medicine.end_date ===
+                            "9999-12-31"
+                                ? "Lifelong"
+                                : formatDate(
+                                    medicine.end_date
+                                )
+                        }
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="
+                                status-badge
+                                ${
+                                    active
+                                    ? "status-active"
+                                    : "status-completed"
+                                }
+                            "
+                        >
+
+                            ${
+                                active
+                                ? "Active"
+                                : "Completed"
+                            }
+
+                        </span>
+
+                    </td>
+
+                `;
+
+
+                reportList.appendChild(
+                    row
+                );
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "❌ Report Error:",
+            error
+        );
+
+
+        reportList.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="loading-report"
+                >
+
+                    ❌ Failed to load report.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
 
 }
+
+
+// ==================================================
+// HTML SAFETY
+// ==================================================
+
+function escapeHTML(value) {
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent =
+        value ?? "";
+
+
+    return div.innerHTML;
+
+}
+
+
+// ==================================================
+// LOAD REPORT
+// ==================================================
+
+loadReport();
 
 </script>
 

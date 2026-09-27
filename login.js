@@ -1,32 +1,83 @@
 function login() {
 
-    let user = document.getElementById("username").value.trim();
-    let pass = document.getElementById("password").value;
+    let user =
+        document.getElementById("username").value.trim();
 
-    // Get registered patient account
-    let savedUsername = localStorage.getItem("patientUsername");
-    let savedPassword = localStorage.getItem("patientPassword");
+    let pass =
+        document.getElementById("password").value;
 
-    // Check whether account exists
-    if (savedUsername === null || savedPassword === null) {
-        alert("No patient account found. Please register first.");
+
+    // ==========================================
+    // GET REGISTERED PATIENT ACCOUNT
+    // ==========================================
+
+    let savedUsername =
+        localStorage.getItem("patientUsername");
+
+    let savedPassword =
+        localStorage.getItem("patientPassword");
+
+
+    // ==========================================
+    // CHECK WHETHER ACCOUNT EXISTS
+    // ==========================================
+
+    if (
+        savedUsername === null ||
+        savedPassword === null
+    ) {
+
+        alert(
+            "No patient account found. Please register first."
+        );
+
         return;
     }
 
-    // Check username
+
+    // ==========================================
+    // CHECK USERNAME
+    // ==========================================
+
     if (user !== savedUsername) {
+
         alert("Invalid Username.");
+
         return;
     }
 
-    // Check password
+
+    // ==========================================
+    // CHECK PASSWORD
+    // ==========================================
+
     if (pass !== savedPassword) {
+
         alert("Invalid Password.");
+
         return;
     }
 
-    // Login successful
-    alert("Patient Login Successful");
 
-    window.location.href = "index.html";
+    // ==========================================
+    // LOGIN SUCCESSFUL
+    // ==========================================
+
+    localStorage.setItem(
+        "loggedInUser",
+        user
+    );
+
+
+    alert(
+        "Patient Login Successful"
+    );
+
+
+    // ==========================================
+    // GO TO DASHBOARD
+    // ==========================================
+
+    window.location.href =
+        "index.html";
 }

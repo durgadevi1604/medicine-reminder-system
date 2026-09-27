@@ -5,14 +5,26 @@
 
 
 // ==================================================
+// RAILWAY BACKEND URL
+// ==================================================
+
+const API_URL =
+    "https://medicine-reminder-system-production.up.railway.app";
+
+
+// ==================================================
 // CHECK LOGIN
 // ==================================================
 
-const loggedInUser = localStorage.getItem("loggedInUser");
+const loggedInUser =
+    localStorage.getItem("loggedInUser");
 
 if (!loggedInUser) {
+
     alert("Please login first.");
-    window.location.href = "login.html";
+
+    window.location.href =
+        "login.html";
 }
 
 
@@ -38,13 +50,17 @@ async function getAvailableCameras() {
 
     try {
 
-        cameras = await Html5Qrcode.getCameras();
+        cameras =
+            await Html5Qrcode.getCameras();
 
         console.log("=================================");
         console.log("📷 AVAILABLE CAMERAS");
         console.log("=================================");
 
-        if (!cameras || cameras.length === 0) {
+        if (
+            !cameras ||
+            cameras.length === 0
+        ) {
 
             alert(
                 "❌ No camera found.\n\n" +
@@ -54,25 +70,24 @@ async function getAvailableCameras() {
             return false;
         }
 
+        cameras.forEach(
+            (camera, index) => {
 
-        cameras.forEach((camera, index) => {
+                console.log(
+                    "Camera " + index,
+                    "Name:",
+                    camera.label,
+                    "ID:",
+                    camera.id
+                );
 
-            console.log(
-                "Camera " + index,
-                "Name:",
-                camera.label,
-                "ID:",
-                camera.id
-            );
-
-        });
-
+            }
+        );
 
         console.log(
             "📷 Total Cameras:",
             cameras.length
         );
-
 
         return true;
 
@@ -103,28 +118,21 @@ async function startCamera(cameraId) {
 
     try {
 
-        // Stop old scanner
-        if (html5QrCode && scannerRunning) {
+        if (
+            html5QrCode &&
+            scannerRunning
+        ) {
 
             await stopScanner();
-
         }
 
-
-        // Create new scanner
         html5QrCode =
             new Html5Qrcode("reader");
-
 
         console.log(
             "📷 Starting camera:",
             cameraId
         );
-
-
-        // ==================================================
-        // START QR SCANNER
-        // ==================================================
 
         await html5QrCode.start(
 
@@ -151,14 +159,11 @@ async function startCamera(cameraId) {
 
         );
 
-
         scannerRunning = true;
-
 
         console.log(
             "✅ Camera started successfully."
         );
-
 
         updateCameraStatus();
 
@@ -197,9 +202,7 @@ async function startAutomaticCamera() {
         }
     }
 
-
     currentCameraIndex = 0;
-
 
     await startCamera(
         cameras[currentCameraIndex].id
@@ -225,13 +228,10 @@ async function startFrontCamera() {
             }
         }
 
-
         console.log(
             "📷 Front Camera button clicked"
         );
 
-
-        // Search front/user camera
         let frontIndex =
             cameras.findIndex(
                 camera =>
@@ -239,23 +239,17 @@ async function startFrontCamera() {
                         .test(camera.label)
             );
 
-
-        // If laptop has only one camera
         if (frontIndex === -1) {
 
             frontIndex = 0;
-
         }
-
 
         currentCameraIndex =
             frontIndex;
 
-
         await startCamera(
             cameras[currentCameraIndex].id
         );
-
 
     }
 
@@ -265,7 +259,6 @@ async function startFrontCamera() {
             "Front camera error:",
             error
         );
-
     }
 }
 
@@ -288,13 +281,10 @@ async function startBackCamera() {
             }
         }
 
-
         console.log(
             "📷 Back Camera button clicked"
         );
 
-
-        // Search rear/back/environment camera
         let backIndex =
             cameras.findIndex(
                 camera =>
@@ -302,8 +292,6 @@ async function startBackCamera() {
                         .test(camera.label)
             );
 
-
-        // If no back camera exists
         if (backIndex === -1) {
 
             alert(
@@ -312,18 +300,14 @@ async function startBackCamera() {
             );
 
             backIndex = 0;
-
         }
-
 
         currentCameraIndex =
             backIndex;
 
-
         await startCamera(
             cameras[currentCameraIndex].id
         );
-
 
     }
 
@@ -333,7 +317,6 @@ async function startBackCamera() {
             "Back camera error:",
             error
         );
-
     }
 }
 
@@ -350,7 +333,6 @@ async function switchCamera() {
             "🔄 Switch Camera clicked"
         );
 
-
         if (cameras.length === 0) {
 
             const success =
@@ -361,8 +343,6 @@ async function switchCamera() {
             }
         }
 
-
-        // Only one camera
         if (cameras.length === 1) {
 
             alert(
@@ -373,10 +353,7 @@ async function switchCamera() {
             return;
         }
 
-
-        // Move to next camera
         currentCameraIndex++;
-
 
         if (
             currentCameraIndex >=
@@ -384,15 +361,12 @@ async function switchCamera() {
         ) {
 
             currentCameraIndex = 0;
-
         }
-
 
         console.log(
             "🔄 Switching to:",
             cameras[currentCameraIndex].label
         );
-
 
         await startCamera(
             cameras[currentCameraIndex].id
@@ -425,11 +399,9 @@ function updateCameraStatus() {
             "cameraStatus"
         );
 
-
     if (!status) {
         return;
     }
-
 
     if (
         cameras.length > 0 &&
@@ -439,7 +411,6 @@ function updateCameraStatus() {
         let label =
             cameras[currentCameraIndex].label;
 
-
         if (
             !label ||
             label.trim() === ""
@@ -448,9 +419,7 @@ function updateCameraStatus() {
             label =
                 "Camera " +
                 (currentCameraIndex + 1);
-
         }
-
 
         status.textContent =
             label;
@@ -461,7 +430,6 @@ function updateCameraStatus() {
 
         status.textContent =
             "Camera";
-
     }
 }
 
@@ -470,16 +438,16 @@ function updateCameraStatus() {
 // QR SCAN SUCCESS
 // ==================================================
 
-async function onScanSuccess(decodedText, decodedResult) {
+async function onScanSuccess(
+    decodedText,
+    decodedResult
+) {
 
-    // Prevent multiple detections
     if (scanProcessing) {
         return;
     }
 
-
     scanProcessing = true;
-
 
     console.log(
         "================================="
@@ -498,39 +466,22 @@ async function onScanSuccess(decodedText, decodedResult) {
         "================================="
     );
 
-
     try {
-
-        // ==================================================
-        // PARSE JSON
-        // ==================================================
 
         const data =
             JSON.parse(decodedText);
-
 
         console.log(
             "Parsed QR Data:",
             data
         );
 
-
-        // ==================================================
-        // CHECK MEDICINE
-        // ==================================================
-
         if (!data.medicine) {
 
             throw new Error(
                 "Medicine name missing"
             );
-
         }
-
-
-        // ==================================================
-        // STORE DATA
-        // ==================================================
 
         scannedMedicine = {
 
@@ -551,16 +502,10 @@ async function onScanSuccess(decodedText, decodedResult) {
 
         };
 
-
         console.log(
             "✅ Medicine data:",
             scannedMedicine
         );
-
-
-        // ==================================================
-        // DISPLAY DATA
-        // ==================================================
 
         const medicineName =
             document.getElementById(
@@ -587,64 +532,43 @@ async function onScanSuccess(decodedText, decodedResult) {
                 "medicineEnd"
             );
 
-
         if (medicineName) {
 
             medicineName.textContent =
                 scannedMedicine.medicine;
-
         }
-
 
         if (medicineDose) {
 
             medicineDose.textContent =
                 scannedMedicine.dosage;
-
         }
-
 
         if (medicineTime) {
 
             medicineTime.textContent =
                 scannedMedicine.time;
-
         }
-
 
         if (medicineStart) {
 
             medicineStart.textContent =
                 scannedMedicine.start;
-
         }
-
 
         if (medicineEnd) {
 
             medicineEnd.textContent =
                 scannedMedicine.end;
-
         }
 
-
-        // ==================================================
-        // STOP CAMERA
-        // ==================================================
-
         await stopScanner();
-
-
-        // ==================================================
-        // SUCCESS MESSAGE
-        // ==================================================
 
         alert(
             "✅ QR Code Scanned Successfully!\n\n" +
             "Medicine: " +
             scannedMedicine.medicine
         );
-
 
         console.log(
             "✅ QR scan completed."
@@ -659,14 +583,11 @@ async function onScanSuccess(decodedText, decodedResult) {
             error
         );
 
-
         scannedMedicine = null;
-
 
         alert(
             "❌ Invalid Medicine QR Code!"
         );
-
 
         scanProcessing = false;
     }
@@ -679,10 +600,8 @@ async function onScanSuccess(decodedText, decodedResult) {
 
 function onScanFailure(errorMessage) {
 
-    // Do nothing.
-    // This function runs continuously
-    // while QR is not detected.
-
+    // QR not detected.
+    // This function runs continuously.
 }
 
 
@@ -701,7 +620,6 @@ async function stopScanner() {
 
             await html5QrCode.stop();
 
-
             console.log(
                 "📷 Camera stopped."
             );
@@ -714,12 +632,9 @@ async function stopScanner() {
                 "Scanner stop error:",
                 error
             );
-
         }
 
-
         scannerRunning = false;
-
     }
 }
 
@@ -730,10 +645,6 @@ async function stopScanner() {
 
 async function saveScannedMedicine() {
 
-    // ==================================================
-    // CHECK QR SCAN
-    // ==================================================
-
     if (!scannedMedicine) {
 
         alert(
@@ -743,16 +654,10 @@ async function saveScannedMedicine() {
         return;
     }
 
-
-    // ==================================================
-    // CHECK LOGIN
-    // ==================================================
-
     const username =
         localStorage.getItem(
             "loggedInUser"
         );
-
 
     if (!username) {
 
@@ -765,11 +670,6 @@ async function saveScannedMedicine() {
 
         return;
     }
-
-
-    // ==================================================
-    // VALIDATE DATA
-    // ==================================================
 
     if (
         !scannedMedicine.medicine ||
@@ -785,11 +685,6 @@ async function saveScannedMedicine() {
 
         return;
     }
-
-
-    // ==================================================
-    // PREPARE DATA
-    // ==================================================
 
     const medicineData = {
 
@@ -810,25 +705,18 @@ async function saveScannedMedicine() {
 
         end:
             scannedMedicine.end
-
     };
-
 
     console.log(
         "📤 Sending medicine to backend:",
         medicineData
     );
 
-
-    // ==================================================
-    // SEND TO BACKEND
-    // ==================================================
-
     try {
 
         const response =
             await fetch(
-                "http://127.0.0.1:5000/api/medicines",
+                `${API_URL}/api/medicines`,
                 {
 
                     method: "POST",
@@ -837,27 +725,22 @@ async function saveScannedMedicine() {
 
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
                         JSON.stringify(
                             medicineData
                         )
-
                 }
             );
 
-
         const result =
             await response.json();
-
 
         console.log(
             "Backend response:",
             result
         );
-
 
         if (!response.ok) {
 
@@ -865,14 +748,11 @@ async function saveScannedMedicine() {
                 result.message ||
                 "Failed to save medicine."
             );
-
         }
-
 
         alert(
             "✅ Scanned Medicine Saved Successfully!"
         );
-
 
         window.location.href =
             "medicine-list.html";
@@ -886,12 +766,10 @@ async function saveScannedMedicine() {
             error
         );
 
-
         alert(
             "❌ Failed to save scanned medicine.\n\n" +
             "Please make sure the backend server is running."
         );
-
     }
 }
 
@@ -908,23 +786,17 @@ document.addEventListener(
             "💊 Medicine QR Scanner Loaded"
         );
 
-
         const success =
             await getAvailableCameras();
-
 
         if (!success) {
             return;
         }
 
-
         console.log(
             "📷 Camera permission available."
         );
 
-
-        // Start first available camera
         await startAutomaticCamera();
-
     }
 );

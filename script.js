@@ -1,161 +1,444 @@
+// ==========================================
+// MEDICINE REMINDER SYSTEM - MAIN SCRIPT
+// RAILWAY BACKEND VERSION
+// ==========================================
+
+const API_URL =
+    "https://medicine-reminder-system-production.up.railway.app";
+
+
+// ==========================================
+// QR SCAN DEMO
+// ==========================================
+
 function scanQR() {
 
-    document.getElementById("name").innerHTML = "Paracetamol";
-    document.getElementById("dose").innerHTML = "500 mg";
-    document.getElementById("time").innerHTML = "08:00";
+    const name = document.getElementById("name");
+    const dose = document.getElementById("dose");
+    const time = document.getElementById("time");
+
+    if (name) {
+        name.innerHTML = "Paracetamol";
+    }
+
+    if (dose) {
+        dose.innerHTML = "500 mg";
+    }
+
+    if (time) {
+        time.innerHTML = "08:00";
+    }
 
     alert("QR Code Scanned Successfully!");
 }
 
 
+
+// ==========================================
+// SAVE REMINDER
+// ==========================================
+
 function saveReminder() {
+
     alert("Medicine Reminder Saved!");
+
 }
 
 
-window.onload = function () {
 
-    let loggedInUser = localStorage.getItem("loggedInUser");
+// ==========================================
+// LOAD MEDICINES FROM RAILWAY
+// ==========================================
 
-    if (!loggedInUser) {
-        window.location.href = "login.html";
-        return;
+async function loadMedicines() {
+
+    try {
+
+        const response =
+            await fetch(`${API_URL}/api/medicines`);
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Unable to load medicines"
+            );
+        }
+
+
+        const result =
+            await response.json();
+
+
+        const medicines =
+            Array.isArray(result)
+                ? result
+                : result.medicines || [];
+
+
+        const loggedInUser =
+            localStorage.getItem("loggedInUser");
+
+
+        if (!loggedInUser) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+
+        // Only logged-in user's medicines
+        const patientMedicines =
+            medicines.filter(function (item) {
+
+                return item.username ===
+                    loggedInUser;
+
+            });
+
+
+        // No medicines
+        if (patientMedicines.length === 0) {
+
+            const name =
+                document.getElementById("name");
+
+            const dose =
+                document.getElementById("dose");
+
+            const time =
+                document.getElementById("time");
+
+
+            if (name) {
+                name.innerHTML = "-";
+            }
+
+            if (dose) {
+                dose.innerHTML = "-";
+            }
+
+            if (time) {
+                time.innerHTML = "-";
+            }
+
+            return;
+        }
+
+
+        // Show latest medicine
+        const latestMedicine =
+            patientMedicines[
+                patientMedicines.length - 1
+            ];
+
+
+        const name =
+            document.getElementById("name");
+
+        const dose =
+            document.getElementById("dose");
+
+        const time =
+            document.getElementById("time");
+
+
+        if (name) {
+
+            name.innerHTML =
+                latestMedicine.medicine_name ||
+                "-";
+
+        }
+
+
+        if (dose) {
+
+            dose.innerHTML =
+                latestMedicine.dosage ||
+                "-";
+
+        }
+
+
+        if (time) {
+
+            time.innerHTML =
+                latestMedicine.reminder_time ||
+                "-";
+
+        }
+
+
+        // Start reminders
+        startAllReminders(
+            patientMedicines
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Medicine loading error:",
+            error
+        );
+
     }
 
-    let medicines =
-        JSON.parse(localStorage.getItem("medicines")) || [];
+}
 
-    let patientMedicines = medicines.filter(function (item) {
-        return item.username === loggedInUser;
-    });
 
-    if (patientMedicines.length === 0) {
 
-        document.getElementById("name").innerHTML = "-";
-        document.getElementById("dose").innerHTML = "-";
-        document.getElementById("time").innerHTML = "-";
-
-        return;
-    }
-
-    // Show latest medicine
-    let latestMedicine =
-        patientMedicines[patientMedicines.length - 1];
-
-    document.getElementById("name").innerHTML =
-        latestMedicine.medicine;
-
-    document.getElementById("dose").innerHTML =
-        latestMedicine.dosage;
-
-    document.getElementById("time").innerHTML =
-        latestMedicine.time;
-
-    startAllReminders(patientMedicines);
-};
-
+// ==========================================
+// START ALL MEDICINE REMINDERS
+// ==========================================
 
 function startAllReminders(medicines) {
 
+
+    // Request notification permission
     if (
         "Notification" in window &&
         Notification.permission === "default"
     ) {
+
         Notification.requestPermission();
+
     }
 
+
+    // Check every second
     setInterval(function () {
 
-        let now = new Date();
 
-        let currentDate =
-            now.toISOString().split("T")[0];
-
-        let currentHour =
-            String(now.getHours()).padStart(2, "0");
-
-        let currentMinute =
-            String(now.getMinutes()).padStart(2, "0");
-
-        let currentTime =
-            currentHour + ":" + currentMinute;
+        const now =
+            new Date();
 
 
-        medicines.forEach(function (medicine, index) {
-
-            // Check date range
-            let startDate = medicine.start;
-            let endDate = medicine.end;
-
-            let dateAllowed = true;
-
-            if (startDate && currentDate < startDate) {
-                dateAllowed = false;
-            }
-
-            if (endDate && currentDate > endDate) {
-                dateAllowed = false;
-            }
-
-            if (!dateAllowed) {
-                return;
-            }
+        const currentDate =
+            now.toISOString()
+                .split("T")[0];
 
 
-            // Check reminder time
-            if (currentTime === medicine.time) {
-
-                let reminderKey =
-                    "reminder_" +
-                    index +
-                    "_" +
-                    currentDate;
-
-                let alreadyShown =
-                    localStorage.getItem(reminderKey);
+        const currentHour =
+            String(
+                now.getHours()
+            ).padStart(2, "0");
 
 
-                if (!alreadyShown) {
+        const currentMinute =
+            String(
+                now.getMinutes()
+            ).padStart(2, "0");
 
-                    if (
-                        "Notification" in window &&
-                        Notification.permission === "granted"
-                    ) {
 
-                        new Notification(
-                            "Medicine Reminder 💊",
-                            {
-                                body:
-                                    "Medicine: " +
-                                    medicine.medicine +
-                                    "\nDosage: " +
-                                    medicine.dosage +
-                                    "\nTime: " +
-                                    medicine.time
-                            }
+        const currentTime =
+            currentHour +
+            ":" +
+            currentMinute;
+
+
+
+        medicines.forEach(
+            function (medicine, index) {
+
+
+                // Backend column names
+                const startDate =
+                    medicine.start_date;
+
+
+                const endDate =
+                    medicine.end_date;
+
+
+                // ==================================
+                // CHECK DATE RANGE
+                // ==================================
+
+                let dateAllowed = true;
+
+
+                if (
+                    startDate &&
+                    currentDate < startDate
+                ) {
+
+                    dateAllowed = false;
+
+                }
+
+
+                if (
+                    endDate &&
+                    endDate !== "9999-12-31" &&
+                    currentDate > endDate
+                ) {
+
+                    dateAllowed = false;
+
+                }
+
+
+                if (!dateAllowed) {
+
+                    return;
+
+                }
+
+
+
+                // ==================================
+                // CHECK REMINDER TIME
+                // ==================================
+
+                const reminderTime =
+                    medicine.reminder_time;
+
+
+                if (
+                    currentTime === reminderTime
+                ) {
+
+
+                    const medicineId =
+                        medicine.id ||
+                        index;
+
+
+                    const reminderKey =
+                        "reminder_" +
+                        medicineId +
+                        "_" +
+                        currentDate;
+
+
+                    const alreadyShown =
+                        localStorage.getItem(
+                            reminderKey
                         );
 
-                    } else {
 
-                        alert(
-                            "Medicine Reminder!\n\n" +
-                            "Medicine: " +
-                            medicine.medicine +
-                            "\nDosage: " +
-                            medicine.dosage +
-                            "\nTime: " +
-                            medicine.time
+
+                    // Don't show twice
+                    if (!alreadyShown) {
+
+
+                        // ==================================
+                        // BROWSER NOTIFICATION
+                        // ==================================
+
+                        if (
+                            "Notification" in window &&
+                            Notification.permission ===
+                                "granted"
+                        ) {
+
+
+                            new Notification(
+                                "Medicine Reminder 💊",
+                                {
+
+                                    body:
+                                        "Medicine: " +
+                                        (
+                                            medicine.medicine_name ||
+                                            "Medicine"
+                                        ) +
+                                        "\nDosage: " +
+                                        (
+                                            medicine.dosage ||
+                                            "-"
+                                        ) +
+                                        "\nTime: " +
+                                        (
+                                            medicine.reminder_time ||
+                                            "-"
+                                        )
+
+                                }
+                            );
+
+
+                        } else {
+
+
+                            // ==================================
+                            // ALERT FALLBACK
+                            // ==================================
+
+                            alert(
+                                "Medicine Reminder!\n\n" +
+
+                                "Medicine: " +
+                                (
+                                    medicine.medicine_name ||
+                                    "Medicine"
+                                ) +
+
+                                "\nDosage: " +
+                                (
+                                    medicine.dosage ||
+                                    "-"
+                                ) +
+
+                                "\nTime: " +
+                                (
+                                    medicine.reminder_time ||
+                                    "-"
+                                )
+                            );
+
+                        }
+
+
+
+                        // ==================================
+                        // MARK AS SHOWN
+                        // ==================================
+
+                        localStorage.setItem(
+                            reminderKey,
+                            "shown"
                         );
+
                     }
 
-                    localStorage.setItem(
-                        reminderKey,
-                        "shown"
-                    );
                 }
-            }
 
-        });
+            }
+        );
+
 
     }, 1000);
+
 }
+
+
+
+// ==========================================
+// PAGE LOAD
+// ==========================================
+
+window.onload = function () {
+
+    const loggedInUser =
+        localStorage.getItem(
+            "loggedInUser"
+        );
+
+
+    if (!loggedInUser) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    loadMedicines();
+
+};

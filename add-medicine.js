@@ -2,6 +2,11 @@
 // SAVE MEDICINE
 // ==========================================
 
+// RAILWAY BACKEND URL
+const API_URL =
+    "https://medicine-reminder-system-production.up.railway.app";
+
+
 async function saveMedicine() {
 
     const button = document.querySelector(
@@ -197,7 +202,7 @@ async function saveMedicine() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:5000/api/medicines",
+                `${API_URL}/api/medicines`,
                 {
                     method: "POST",
 
@@ -366,7 +371,7 @@ async function saveMedicine() {
 
             alert(
                 "❌ Backend response is taking too long.\n\n" +
-                "Please check whether server.js is running."
+                "Please check whether Railway backend is running."
             );
 
         }

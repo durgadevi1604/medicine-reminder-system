@@ -5,7 +5,9 @@
 const params = new URLSearchParams(window.location.search);
 const medicineId = params.get("id");
 
-const API_URL = "http://127.0.0.1:5000";
+// RAILWAY BACKEND URL
+const API_URL =
+    "https://medicine-reminder-system-production.up.railway.app";
 
 
 // ==========================================

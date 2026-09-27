@@ -17,6 +17,14 @@ let audioUnlocked = false;
 
 
 // =====================================
+// RAILWAY BACKEND URL
+// =====================================
+
+const API_URL =
+    "https://medicine-reminder-system-production.up.railway.app";
+
+
+// =====================================
 // HTML ESCAPE
 // =====================================
 
@@ -60,7 +68,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     startReminderChecker();
 
-    // Unlock audio after first user click
     document.addEventListener(
         "click",
         unlockAlarmAudio,
@@ -95,7 +102,7 @@ async function loadMedicines() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:5000/api/medicines"
+                `${API_URL}/api/medicines`
             );
 
         if (!response.ok) {
@@ -310,7 +317,6 @@ function getMedicineDurationDays(
     endDate
 ) {
 
-    // Lifelong medicine
     if (endDate === "9999-12-31") {
 
         return Infinity;
@@ -330,7 +336,6 @@ function getMedicineDurationDays(
         return 0;
     }
 
-    // Inclusive duration
     return (
         endNumber -
         startNumber +
@@ -462,10 +467,8 @@ function startReminderChecker() {
         clearInterval(reminderInterval);
     }
 
-    // Check immediately
     checkMedicineReminder();
 
-    // Check every 2 seconds
     reminderInterval =
         setInterval(
             checkMedicineReminder,
@@ -506,7 +509,7 @@ async function checkMedicineReminder() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:5000/api/medicines"
+                `${API_URL}/api/medicines`
             );
 
         if (!response.ok) {
@@ -515,10 +518,6 @@ async function checkMedicineReminder() {
 
         const medicines =
             await response.json();
-
-        // =================================
-        // CURRENT DATE
-        // =================================
 
         const now =
             new Date();
@@ -529,10 +528,6 @@ async function checkMedicineReminder() {
             ).padStart(2, "0")}-${String(
                 now.getDate()
             ).padStart(2, "0")}`;
-
-        // =================================
-        // CURRENT TIME
-        // =================================
 
         const currentHours =
             String(
@@ -553,10 +548,6 @@ async function checkMedicineReminder() {
             currentTime
         );
 
-        // =================================
-        // USER MEDICINES
-        // =================================
-
         const userMedicines =
             medicines.filter(
                 medicine =>
@@ -567,10 +558,6 @@ async function checkMedicineReminder() {
                         username
                     ).trim()
             );
-
-        // =================================
-        // CHECK EACH MEDICINE
-        // =================================
 
         for (
             const medicine of userMedicines
@@ -586,10 +573,6 @@ async function checkMedicineReminder() {
                     medicine.end_date
                 );
 
-            // =================================
-            // MEDICINE DURATION
-            // =================================
-
             const durationDays =
                 getMedicineDurationDays(
                     startDate,
@@ -603,10 +586,6 @@ async function checkMedicineReminder() {
                     : durationDays + " days"
             );
 
-            // =================================
-            // ONLY MORE THAN 1 WEEK
-            // =================================
-
             if (durationDays <= 7) {
 
                 console.log(
@@ -616,10 +595,6 @@ async function checkMedicineReminder() {
 
                 continue;
             }
-
-            // =================================
-            // START DATE CHECK
-            // =================================
 
             if (
                 startDate &&
@@ -634,10 +609,6 @@ async function checkMedicineReminder() {
                 continue;
             }
 
-            // =================================
-            // END DATE CHECK
-            // =================================
-
             if (
                 endDate !== "9999-12-31" &&
                 currentDate > endDate
@@ -650,10 +621,6 @@ async function checkMedicineReminder() {
 
                 continue;
             }
-
-            // =================================
-            // REMINDER TIME
-            // =================================
 
             const reminderTime =
                 String(
@@ -674,10 +641,6 @@ async function checkMedicineReminder() {
                 continue;
             }
 
-            // =================================
-            // TIME CHECK
-            // =================================
-
             if (
                 currentTime !==
                 reminderTime
@@ -685,10 +648,6 @@ async function checkMedicineReminder() {
 
                 continue;
             }
-
-            // =================================
-            // PREVENT DUPLICATE ALARM
-            // =================================
 
             const reminderKey =
                 `${medicine.id}_${currentDate}_${reminderTime}`;
@@ -709,10 +668,6 @@ async function checkMedicineReminder() {
                 medicine.medicine_name,
                 reminderTime
             );
-
-            // =================================
-            // SHOW REMINDER
-            // =================================
 
             showMedicineReminder(
                 medicine
@@ -755,7 +710,6 @@ function showMedicineReminder(
             medicine.dosage
         );
 
-    // Browser notification
     sendNotification(
         "💊 Medicine Reminder",
         `Please take ${
@@ -764,10 +718,6 @@ function showMedicineReminder(
             medicine.dosage || ""
         } now.`
     );
-
-    // =================================
-    // CREATE POPUP
-    // =================================
 
     let alarmBox =
         document.getElementById(
@@ -868,7 +818,6 @@ function showMedicineReminder(
     alarmBox.style.display =
         "block";
 
-    // Play alarm
     playAlarm();
 }
 
@@ -941,12 +890,7 @@ function sendNotification(
 
 function playAlarm() {
 
-    // Stop previous alarm
     stopAlarm(false);
-
-    // =================================
-    // FEMALE VOICE
-    // =================================
 
     if (
         "speechSynthesis" in window
@@ -973,7 +917,6 @@ function playAlarm() {
                     speech.pitch =
                         1.15;
 
-                    // Maximum speech volume
                     speech.volume =
                         1.0;
 
@@ -1044,11 +987,6 @@ function playAlarm() {
     }
 
 
-    // =================================
-    // WEB AUDIO
-    // HIGH VOLUME
-    // =================================
-
     try {
 
         const AudioContext =
@@ -1079,26 +1017,15 @@ function playAlarm() {
                 );
         }
 
-
-        // =================================
-        // MASTER VOLUME
-        // =================================
-
         const masterGain =
             ctx.createGain();
 
-        // 🔊 HIGH VOLUME
         masterGain.gain.value =
             0.85;
 
         masterGain.connect(
             ctx.destination
         );
-
-
-        // =================================
-        // NOTE
-        // =================================
 
         function playNote(
             frequency,
@@ -1118,7 +1045,6 @@ function playAlarm() {
             oscillator.frequency.value =
                 frequency;
 
-            // 🔊 HIGH NOTE VOLUME
             gain.gain.setValueAtTime(
                 0.30,
                 startTime
@@ -1146,11 +1072,6 @@ function playAlarm() {
             );
         }
 
-
-        // =================================
-        // LOUD CHIME
-        // =================================
-
         function playChime(
             frequency,
             startTime
@@ -1168,7 +1089,6 @@ function playAlarm() {
             oscillator.frequency.value =
                 frequency;
 
-            // 🔊 HIGH CHIME VOLUME
             gain.gain.setValueAtTime(
                 0.24,
                 startTime
@@ -1196,11 +1116,6 @@ function playAlarm() {
             );
         }
 
-
-        // =================================
-        // LOUD MEDICINE MELODY
-        // =================================
-
         function playMelody() {
 
             if (!alarmAudioContext) {
@@ -1209,9 +1124,6 @@ function playAlarm() {
 
             const currentTime =
                 ctx.currentTime;
-
-
-            // 🔔 Main melody
 
             playNote(
                 659.25,
@@ -1243,9 +1155,6 @@ function playAlarm() {
                 0.9
             );
 
-
-            // 🔔 High chimes
-
             playChime(
                 1046.50,
                 currentTime + 1.65
@@ -1262,14 +1171,7 @@ function playAlarm() {
             );
         }
 
-
-        // Play immediately
         playMelody();
-
-
-        // =================================
-        // REPEAT EVERY 4 SECONDS
-        // =================================
 
         alarmTimer =
             setInterval(
@@ -1287,11 +1189,6 @@ function playAlarm() {
                 },
                 4000
             );
-
-
-        // =================================
-        // AUTO STOP AFTER 30 SECONDS
-        // =================================
 
         alarmStopTimer =
             setTimeout(
@@ -1348,10 +1245,6 @@ function stopAlarm(
     hideBox = true
 ) {
 
-    // =================================
-    // STOP REPEATING ALARM
-    // =================================
-
     if (alarmTimer) {
 
         clearInterval(
@@ -1361,11 +1254,6 @@ function stopAlarm(
         alarmTimer = null;
     }
 
-
-    // =================================
-    // STOP AUTO STOP TIMER
-    // =================================
-
     if (alarmStopTimer) {
 
         clearTimeout(
@@ -1374,11 +1262,6 @@ function stopAlarm(
 
         alarmStopTimer = null;
     }
-
-
-    // =================================
-    // STOP VOICE
-    // =================================
 
     if (
         "speechSynthesis" in window
@@ -1393,11 +1276,6 @@ function stopAlarm(
             .onvoiceschanged =
             null;
     }
-
-
-    // =================================
-    // STOP AUDIO
-    // =================================
 
     if (alarmAudioContext) {
 
@@ -1424,11 +1302,6 @@ function stopAlarm(
         alarmAudioContext =
             null;
     }
-
-
-    // =================================
-    // HIDE POPUP
-    // =================================
 
     if (hideBox) {
 
@@ -1496,7 +1369,7 @@ async function deleteMedicine(id) {
 
         const response =
             await fetch(
-                `http://127.0.0.1:5000/api/medicines/${id}`,
+                `${API_URL}/api/medicines/${id}`,
                 {
                     method: "DELETE"
                 }
