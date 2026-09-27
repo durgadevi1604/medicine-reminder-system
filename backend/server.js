@@ -22,7 +22,7 @@ const db = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 3306,
+    port: Number(process.env.DB_PORT) || 3306,
     dateStrings: true
 });
 
@@ -33,9 +33,15 @@ const db = mysql.createConnection({
 db.connect((err) => {
 
     if (err) {
-        console.log("❌ MySQL connection failed:", err.message);
+
+        // FULL ERROR DISPLAY
+        console.error("❌ MySQL connection failed:");
+        console.error(err);
+
     } else {
+
         console.log("✅ MySQL connected successfully!");
+
     }
 
 });
@@ -109,7 +115,7 @@ app.post("/api/medicines", (req, res) => {
 
             if (err) {
 
-                console.log("❌ Database Error:", err.message);
+                console.error("❌ Database Error:", err);
 
                 return res.status(500).json({
                     success: false,
@@ -150,7 +156,7 @@ app.get("/api/medicines", (req, res) => {
 
             if (err) {
 
-                console.log("❌ Database Error:", err.message);
+                console.error("❌ Database Error:", err);
 
                 return res.status(500).json({
                     success: false,
@@ -187,6 +193,8 @@ app.get("/api/medicines/:id", (req, res) => {
         (err, results) => {
 
             if (err) {
+
+                console.error("❌ Database Error:", err);
 
                 return res.status(500).json({
                     success: false,
@@ -266,6 +274,8 @@ app.put("/api/medicines/:id", (req, res) => {
 
             if (err) {
 
+                console.error("❌ Database Error:", err);
+
                 return res.status(500).json({
                     success: false,
                     message: "Failed to update medicine.",
@@ -310,6 +320,8 @@ app.delete("/api/medicines/:id", (req, res) => {
         (err, result) => {
 
             if (err) {
+
+                console.error("❌ Database Error:", err);
 
                 return res.status(500).json({
                     success: false,
@@ -413,6 +425,8 @@ app.post("/api/history", (req, res) => {
 
             if (err) {
 
+                console.error("❌ Database Error:", err);
+
                 return res.status(500).json({
                     success: false,
                     message: "Failed to save medicine history.",
@@ -455,6 +469,8 @@ app.get("/api/history/:username", (req, res) => {
 
             if (err) {
 
+                console.error("❌ Database Error:", err);
+
                 return res.status(500).json({
                     success: false,
                     message: "Failed to fetch medicine history.",
@@ -487,6 +503,8 @@ app.delete("/api/history/:id", (req, res) => {
         (err, result) => {
 
             if (err) {
+
+                console.error("❌ Database Error:", err);
 
                 return res.status(500).json({
                     success: false,
