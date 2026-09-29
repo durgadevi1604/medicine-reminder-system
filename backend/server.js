@@ -6,35 +6,45 @@ const cors = require("cors");
 
 const app = express();
 
-// ===============================
+// ==================================================
 // MIDDLEWARE
-// ===============================
+// ==================================================
 
 app.use(cors());
 app.use(express.json());
 
-// ===============================
-// MYSQL CONNECTION
-// ===============================
+// ==================================================
+// MYSQL CONNECTION POOL
+// ==================================================
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: Number(process.env.DB_PORT) || 3306,
-    dateStrings: true
+
+    dateStrings: true,
+
+    waitForConnections: true,
+    connectionLimit: 10,
+    maxIdle: 10,
+    idleTimeout: 60000,
+
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0,
+
+    queueLimit: 0
 });
 
-// ===============================
-// MYSQL CONNECT
-// ===============================
+// ==================================================
+// MYSQL TEST CONNECTION
+// ==================================================
 
-db.connect((err) => {
+db.getConnection((err, connection) => {
 
     if (err) {
 
-        // FULL ERROR DISPLAY
         console.error("❌ MySQL connection failed:");
         console.error(err);
 
@@ -42,13 +52,15 @@ db.connect((err) => {
 
         console.log("✅ MySQL connected successfully!");
 
+        connection.release();
+
     }
 
 });
 
-// ===============================
+// ==================================================
 // TEST BACKEND
-// ===============================
+// ==================================================
 
 app.get("/", (req, res) => {
 
@@ -63,9 +75,9 @@ app.get("/", (req, res) => {
 // MEDICINE APIs
 // ==================================================
 
-// ===============================
+// ==================================================
 // SAVE MEDICINE
-// ===============================
+// ==================================================
 
 app.post("/api/medicines", (req, res) => {
 
@@ -85,8 +97,7 @@ app.post("/api/medicines", (req, res) => {
         !medicine ||
         !dosage ||
         !time ||
-        !start ||
-        !end
+        !start
     ) {
 
         return res.status(400).json({
@@ -96,10 +107,20 @@ app.post("/api/medicines", (req, res) => {
 
     }
 
-    const sql =
-        "INSERT INTO medicines " +
-        "(username, medicine_name, dosage, reminder_time, start_date, end_date) " +
-        "VALUES (?, ?, ?, ?, ?, ?)";
+    const finalEndDate = end || "9999-12-31";
+
+    const sql = `
+        INSERT INTO medicines
+        (
+            username,
+            medicine_name,
+            dosage,
+            reminder_time,
+            start_date,
+            end_date
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
 
     db.query(
         sql,
@@ -109,7 +130,7 @@ app.post("/api/medicines", (req, res) => {
             dosage,
             time,
             start,
-            end
+            finalEndDate
         ],
         (err, result) => {
 
@@ -138,17 +159,24 @@ app.post("/api/medicines", (req, res) => {
 
 });
 
-// ===============================
+// ==================================================
 // GET ALL MEDICINES
-// ===============================
+// ==================================================
 
 app.get("/api/medicines", (req, res) => {
 
-    const sql =
-        "SELECT " +
-        "id, username, medicine_name, dosage, reminder_time, start_date, end_date " +
-        "FROM medicines " +
-        "ORDER BY id DESC";
+    const sql = `
+        SELECT
+            id,
+            username,
+            medicine_name,
+            dosage,
+            reminder_time,
+            start_date,
+            end_date
+        FROM medicines
+        ORDER BY id DESC
+    `;
 
     db.query(
         sql,
@@ -173,19 +201,26 @@ app.get("/api/medicines", (req, res) => {
 
 });
 
-// ===============================
+// ==================================================
 // GET SINGLE MEDICINE
-// ===============================
+// ==================================================
 
 app.get("/api/medicines/:id", (req, res) => {
 
     const id = req.params.id;
 
-    const sql =
-        "SELECT " +
-        "id, username, medicine_name, dosage, reminder_time, start_date, end_date " +
-        "FROM medicines " +
-        "WHERE id = ?";
+    const sql = `
+        SELECT
+            id,
+            username,
+            medicine_name,
+            dosage,
+            reminder_time,
+            start_date,
+            end_date
+        FROM medicines
+        WHERE id = ?
+    `;
 
     db.query(
         sql,
@@ -220,28 +255,40 @@ app.get("/api/medicines/:id", (req, res) => {
 
 });
 
-// ===============================
+// ==================================================
 // UPDATE MEDICINE
-// ===============================
+// ==================================================
 
 app.put("/api/medicines/:id", (req, res) => {
 
     const id = req.params.id;
 
-    const {
-        medicine_name,
-        dosage,
-        reminder_time,
-        start_date,
-        end_date
-    } = req.body;
+    // Support both frontend naming styles
+    const medicine =
+        req.body.medicine ||
+        req.body.medicine_name;
+
+    const dosage =
+        req.body.dosage;
+
+    const time =
+        req.body.time ||
+        req.body.reminder_time;
+
+    const start =
+        req.body.start ||
+        req.body.start_date;
+
+    const end =
+        req.body.end ||
+        req.body.end_date ||
+        "9999-12-31";
 
     if (
-        !medicine_name ||
+        !medicine ||
         !dosage ||
-        !reminder_time ||
-        !start_date ||
-        !end_date
+        !time ||
+        !start
     ) {
 
         return res.status(400).json({
@@ -251,23 +298,25 @@ app.put("/api/medicines/:id", (req, res) => {
 
     }
 
-    const sql =
-        "UPDATE medicines SET " +
-        "medicine_name = ?, " +
-        "dosage = ?, " +
-        "reminder_time = ?, " +
-        "start_date = ?, " +
-        "end_date = ? " +
-        "WHERE id = ?";
+    const sql = `
+        UPDATE medicines
+        SET
+            medicine_name = ?,
+            dosage = ?,
+            reminder_time = ?,
+            start_date = ?,
+            end_date = ?
+        WHERE id = ?
+    `;
 
     db.query(
         sql,
         [
-            medicine_name,
+            medicine,
             dosage,
-            reminder_time,
-            start_date,
-            end_date,
+            time,
+            start,
+            end,
             id
         ],
         (err, result) => {
@@ -303,16 +352,18 @@ app.put("/api/medicines/:id", (req, res) => {
 
 });
 
-// ===============================
+// ==================================================
 // DELETE MEDICINE
-// ===============================
+// ==================================================
 
 app.delete("/api/medicines/:id", (req, res) => {
 
     const id = req.params.id;
 
-    const sql =
-        "DELETE FROM medicines WHERE id = ?";
+    const sql = `
+        DELETE FROM medicines
+        WHERE id = ?
+    `;
 
     db.query(
         sql,
@@ -354,9 +405,9 @@ app.delete("/api/medicines/:id", (req, res) => {
 // MEDICINE HISTORY APIs
 // ==================================================
 
-// ===============================
-// SAVE MEDICINE HISTORY
-// ===============================
+// ==================================================
+// SAVE HISTORY
+// ==================================================
 
 app.post("/api/history", (req, res) => {
 
@@ -404,10 +455,20 @@ app.post("/api/history", (req, res) => {
 
     }
 
-    const sql =
-        "INSERT INTO medicine_history " +
-        "(username, medicine_id, medicine_name, dosage, reminder_time, status, history_date, history_time) " +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    const sql = `
+        INSERT INTO medicine_history
+        (
+            username,
+            medicine_id,
+            medicine_name,
+            dosage,
+            reminder_time,
+            status,
+            history_date,
+            history_time
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
     db.query(
         sql,
@@ -446,21 +507,30 @@ app.post("/api/history", (req, res) => {
 
 });
 
-// ===============================
-// GET HISTORY FOR USER
-// ===============================
+// ==================================================
+// GET USER HISTORY
+// ==================================================
 
 app.get("/api/history/:username", (req, res) => {
 
     const username = req.params.username;
 
-    const sql =
-        "SELECT " +
-        "id, username, medicine_id, medicine_name, dosage, " +
-        "reminder_time, status, history_date, history_time, created_at " +
-        "FROM medicine_history " +
-        "WHERE username = ? " +
-        "ORDER BY id DESC";
+    const sql = `
+        SELECT
+            id,
+            username,
+            medicine_id,
+            medicine_name,
+            dosage,
+            reminder_time,
+            status,
+            history_date,
+            history_time,
+            created_at
+        FROM medicine_history
+        WHERE username = ?
+        ORDER BY id DESC
+    `;
 
     db.query(
         sql,
@@ -486,16 +556,18 @@ app.get("/api/history/:username", (req, res) => {
 
 });
 
-// ===============================
+// ==================================================
 // DELETE HISTORY
-// ===============================
+// ==================================================
 
 app.delete("/api/history/:id", (req, res) => {
 
     const id = req.params.id;
 
-    const sql =
-        "DELETE FROM medicine_history WHERE id = ?";
+    const sql = `
+        DELETE FROM medicine_history
+        WHERE id = ?
+    `;
 
     db.query(
         sql,
