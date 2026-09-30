@@ -32,31 +32,43 @@ const db = mysql.createPool({
     idleTimeout: 60000,
 
     enableKeepAlive: true,
-    keepAliveInitialDelay: 0,
+    keepAliveInitialDelay: 10000,
 
     queueLimit: 0
 });
 
 // ==================================================
-// MYSQL TEST CONNECTION
+// MYSQL CONNECTION TEST
 // ==================================================
 
-db.getConnection((err, connection) => {
+db.query("SELECT 1", (err) => {
 
     if (err) {
-
         console.error("❌ MySQL connection failed:");
         console.error(err);
-
     } else {
-
         console.log("✅ MySQL connected successfully!");
-
-        connection.release();
-
     }
 
 });
+
+// ==================================================
+// KEEP MYSQL CONNECTION ALIVE
+// ==================================================
+
+setInterval(() => {
+
+    db.query("SELECT 1", (err) => {
+
+        if (err) {
+            console.error("⚠️ MySQL keep-alive failed:", err.message);
+        } else {
+            console.log("💚 MySQL keep-alive OK");
+        }
+
+    });
+
+}, 30000);
 
 // ==================================================
 // TEST BACKEND
@@ -263,7 +275,6 @@ app.put("/api/medicines/:id", (req, res) => {
 
     const id = req.params.id;
 
-    // Support both frontend naming styles
     const medicine =
         req.body.medicine ||
         req.body.medicine_name;
