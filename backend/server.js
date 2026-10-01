@@ -13,9 +13,7 @@ const app = express();
 
 // ==================================================
 // CORS - MANUAL
-// ==================================================
-// Express 5 compatible
-// Handles frontend from Live Server / Railway
+// EXPRESS 5 COMPATIBLE
 // ==================================================
 
 app.use((req, res, next) => {
@@ -23,15 +21,19 @@ app.use((req, res, next) => {
     const origin = req.headers.origin;
 
     if (origin) {
+
         res.setHeader(
             "Access-Control-Allow-Origin",
             origin
         );
+
     } else {
+
         res.setHeader(
             "Access-Control-Allow-Origin",
             "*"
         );
+
     }
 
     res.setHeader(
@@ -49,15 +51,17 @@ app.use((req, res, next) => {
         "86400"
     );
 
-    // Preflight request
     if (req.method === "OPTIONS") {
 
         console.log(
-            `🟢 CORS preflight: ${req.headers.origin || "unknown"}`
+            `🟢 CORS preflight: ${
+                req.headers.origin || "unknown"
+            }`
         );
 
-        return res.status(204).end();
-
+        return res
+            .status(204)
+            .end();
     }
 
     next();
@@ -69,22 +73,26 @@ app.use((req, res, next) => {
 // BODY PARSER
 // ==================================================
 
-app.use(express.json());
+app.use(
+    express.json()
+);
 
 
 // ==================================================
 // REQUEST LOGGER
 // ==================================================
 
-app.use((req, res, next) => {
+app.use(
+    (req, res, next) => {
 
-    console.log(
-        `📡 ${req.method} ${req.originalUrl}`
-    );
+        console.log(
+            `📡 ${req.method} ${req.originalUrl}`
+        );
 
-    next();
+        next();
 
-});
+    }
+);
 
 
 // ==================================================
@@ -93,32 +101,46 @@ app.use((req, res, next) => {
 
 const db = mysql.createPool({
 
-    host: process.env.DB_HOST,
+    host:
+        process.env.DB_HOST,
 
-    user: process.env.DB_USER,
+    user:
+        process.env.DB_USER,
 
-    password: process.env.DB_PASSWORD,
+    password:
+        process.env.DB_PASSWORD,
 
-    database: process.env.DB_NAME,
+    database:
+        process.env.DB_NAME,
 
     port:
-        Number(process.env.DB_PORT) || 3306,
+        Number(
+            process.env.DB_PORT
+        ) || 3306,
 
-    dateStrings: true,
+    dateStrings:
+        true,
 
-    waitForConnections: true,
+    waitForConnections:
+        true,
 
-    connectionLimit: 10,
+    connectionLimit:
+        10,
 
-    maxIdle: 10,
+    maxIdle:
+        10,
 
-    idleTimeout: 60000,
+    idleTimeout:
+        60000,
 
-    enableKeepAlive: true,
+    enableKeepAlive:
+        true,
 
-    keepAliveInitialDelay: 10000,
+    keepAliveInitialDelay:
+        10000,
 
-    queueLimit: 0
+    queueLimit:
+        0
 
 });
 
@@ -137,7 +159,9 @@ db.query(
                 "❌ MySQL connection failed:"
             );
 
-            console.error(err);
+            console.error(
+                err
+            );
 
         } else {
 
@@ -152,34 +176,80 @@ db.query(
 
 
 // ==================================================
+// CREATE USERS TABLE AUTOMATICALLY
+// ==================================================
+
+const createUsersTableSQL = `
+
+    CREATE TABLE IF NOT EXISTS users (
+
+        id INT AUTO_INCREMENT PRIMARY KEY,
+
+        username VARCHAR(10) NOT NULL UNIQUE,
+
+        password VARCHAR(255) NOT NULL,
+
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    )
+
+`;
+
+db.query(
+    createUsersTableSQL,
+    (err) => {
+
+        if (err) {
+
+            console.error(
+                "❌ Users table creation failed:",
+                err
+            );
+
+        } else {
+
+            console.log(
+                "✅ Users table ready!"
+            );
+
+        }
+
+    }
+);
+
+
+// ==================================================
 // MYSQL KEEP ALIVE
 // ==================================================
 
-setInterval(() => {
+setInterval(
+    () => {
 
-    db.query(
-        "SELECT 1",
-        (err) => {
+        db.query(
+            "SELECT 1",
+            (err) => {
 
-            if (err) {
+                if (err) {
 
-                console.error(
-                    "⚠️ MySQL keep-alive failed:",
-                    err.message
-                );
+                    console.error(
+                        "⚠️ MySQL keep-alive failed:",
+                        err.message
+                    );
 
-            } else {
+                } else {
 
-                console.log(
-                    "💚 MySQL keep-alive OK"
-                );
+                    console.log(
+                        "💚 MySQL keep-alive OK"
+                    );
+
+                }
 
             }
+        );
 
-        }
-    );
-
-}, 30000);
+    },
+    30000
+);
 
 
 // ==================================================
@@ -192,7 +262,8 @@ app.get(
 
         res.status(200).json({
 
-            success: true,
+            success:
+                true,
 
             message:
                 "Medicine Reminder Backend is Running!"
@@ -217,32 +288,498 @@ app.get(
 
                 if (err) {
 
-                    return res.status(500).json({
+                    return res
+                        .status(500)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        server: "online",
+                            server:
+                                "online",
 
-                        database: "disconnected",
+                            database:
+                                "disconnected",
 
-                        error:
-                            err.message
+                            error:
+                                err.message
 
-                    });
+                        });
 
                 }
 
-                res.status(200).json({
+                res
+                    .status(200)
+                    .json({
 
-                    success: true,
+                        success:
+                            true,
 
-                    server: "online",
+                        server:
+                            "online",
 
-                    database: "connected"
+                        database:
+                            "connected"
+
+                    });
+
+            }
+        );
+
+    }
+);
+
+
+// ==================================================
+// CREATE ACCOUNT / REGISTER
+// ==================================================
+
+app.post(
+    "/api/register",
+    (req, res) => {
+
+        console.log(
+            "📥 POST /api/register"
+        );
+
+        console.log(
+            "📦 Register data:",
+            req.body
+        );
+
+        const {
+            username,
+            password
+        } = req.body;
+
+
+        // ==========================================
+        // REQUIRED DATA
+        // ==========================================
+
+        if (!username || !password) {
+
+            return res
+                .status(400)
+                .json({
+
+                    success:
+                        false,
+
+                    message:
+                        "Username and password are required."
 
                 });
 
+        }
+
+
+        const cleanUsername =
+            String(username).trim();
+
+        const cleanPassword =
+            String(password).trim();
+
+
+        // ==========================================
+        // USERNAME VALIDATION
+        // ==========================================
+
+        if (
+            cleanUsername.length < 1 ||
+            cleanUsername.length > 10
+        ) {
+
+            return res
+                .status(400)
+                .json({
+
+                    success:
+                        false,
+
+                    message:
+                        "Username must be maximum 10 characters."
+
+                });
+
+        }
+
+
+        // ==========================================
+        // PASSWORD - EXACTLY 5 DIGITS
+        // ==========================================
+
+        if (
+            !/^\d{5}$/.test(
+                cleanPassword
+            )
+        ) {
+
+            return res
+                .status(400)
+                .json({
+
+                    success:
+                        false,
+
+                    message:
+                        "Password must contain exactly 5 digits."
+
+                });
+
+        }
+
+
+        // ==========================================
+        // CHECK USERNAME
+        // ==========================================
+
+        const checkSQL = `
+
+            SELECT
+                id
+
+            FROM users
+
+            WHERE username = ?
+
+            LIMIT 1
+
+        `;
+
+
+        db.query(
+
+            checkSQL,
+
+            [cleanUsername],
+
+            (err, results) => {
+
+                if (err) {
+
+                    console.error(
+                        "❌ Register database error:",
+                        err
+                    );
+
+                    return res
+                        .status(500)
+                        .json({
+
+                            success:
+                                false,
+
+                            message:
+                                "Database error."
+
+                        });
+
+                }
+
+
+                // ==================================
+                // USER ALREADY EXISTS
+                // ==================================
+
+                if (
+                    results.length > 0
+                ) {
+
+                    return res
+                        .status(409)
+                        .json({
+
+                            success:
+                                false,
+
+                            message:
+                                "Username already exists."
+
+                        });
+
+                }
+
+
+                // ==================================
+                // INSERT USER
+                // ==================================
+
+                const insertSQL = `
+
+                    INSERT INTO users
+                    (
+                        username,
+                        password
+                    )
+
+                    VALUES (?, ?)
+
+                `;
+
+
+                db.query(
+
+                    insertSQL,
+
+                    [
+                        cleanUsername,
+                        cleanPassword
+                    ],
+
+                    (err, result) => {
+
+                        if (err) {
+
+                            console.error(
+                                "❌ Account creation failed:",
+                                err
+                            );
+
+                            return res
+                                .status(500)
+                                .json({
+
+                                    success:
+                                        false,
+
+                                    message:
+                                        "Failed to create account.",
+
+                                    error:
+                                        err.message
+
+                                });
+
+                        }
+
+
+                        console.log(
+                            "✅ Account created:",
+                            cleanUsername
+                        );
+
+
+                        return res
+                            .status(201)
+                            .json({
+
+                                success:
+                                    true,
+
+                                message:
+                                    "Account created successfully!",
+
+                                id:
+                                    result.insertId,
+
+                                username:
+                                    cleanUsername
+
+                            });
+
+                    }
+
+                );
+
             }
+
+        );
+
+    }
+);
+
+
+// ==================================================
+// LOGIN
+// ==================================================
+
+app.post(
+    "/api/login",
+    (req, res) => {
+
+        console.log(
+            "📥 POST /api/login"
+        );
+
+        console.log(
+            "📦 Login data:",
+            {
+                username:
+                    req.body.username
+            }
+        );
+
+
+        const {
+            username,
+            password
+        } = req.body;
+
+
+        // ==========================================
+        // REQUIRED DATA
+        // ==========================================
+
+        if (!username || !password) {
+
+            return res
+                .status(400)
+                .json({
+
+                    success:
+                        false,
+
+                    message:
+                        "Username and password are required."
+
+                });
+
+        }
+
+
+        const cleanUsername =
+            String(username).trim();
+
+        const cleanPassword =
+            String(password).trim();
+
+
+        // ==========================================
+        // FIND USER
+        // ==========================================
+
+        const sql = `
+
+            SELECT
+                id,
+                username,
+                password
+
+            FROM users
+
+            WHERE username = ?
+
+            LIMIT 1
+
+        `;
+
+
+        db.query(
+
+            sql,
+
+            [cleanUsername],
+
+            (err, results) => {
+
+                if (err) {
+
+                    console.error(
+                        "❌ Login database error:",
+                        err
+                    );
+
+                    return res
+                        .status(500)
+                        .json({
+
+                            success:
+                                false,
+
+                            message:
+                                "Database error."
+
+                        });
+
+                }
+
+
+                // ==================================
+                // USER NOT FOUND
+                // ==================================
+
+                if (
+                    results.length === 0
+                ) {
+
+                    return res
+                        .status(401)
+                        .json({
+
+                            success:
+                                false,
+
+                            message:
+                                "Invalid username or password."
+
+                        });
+
+                }
+
+
+                const user =
+                    results[0];
+
+
+                // ==================================
+                // PASSWORD CHECK
+                // ==================================
+
+                if (
+                    String(user.password) !==
+                    cleanPassword
+                ) {
+
+                    return res
+                        .status(401)
+                        .json({
+
+                            success:
+                                false,
+
+                            message:
+                                "Invalid username or password."
+
+                        });
+
+                }
+
+
+                // ==================================
+                // LOGIN SUCCESS
+                // ==================================
+
+                console.log(
+                    "✅ Login successful:",
+                    cleanUsername
+                );
+
+
+                return res
+                    .status(200)
+                    .json({
+
+                        success:
+                            true,
+
+                        message:
+                            "Login successful!",
+
+                        user: {
+
+                            id:
+                                user.id,
+
+                            username:
+                                user.username
+
+                        }
+
+                    });
+
+            }
+
         );
 
     }
@@ -284,10 +821,6 @@ app.post(
         } = req.body;
 
 
-        // ==========================================
-        // VALIDATION
-        // ==========================================
-
         if (
 
             !username ||
@@ -306,29 +839,25 @@ app.post(
                 "❌ Required medicine data missing"
             );
 
-            return res.status(400).json({
+            return res
+                .status(400)
+                .json({
 
-                success: false,
+                    success:
+                        false,
 
-                message:
-                    "Required medicine data is missing."
+                    message:
+                        "Required medicine data is missing."
 
-            });
+                });
 
         }
 
 
-        // ==========================================
-        // END DATE
-        // ==========================================
-
         const finalEndDate =
-            end || "9999-12-31";
+            end ||
+            "9999-12-31";
 
-
-        // ==========================================
-        // INSERT
-        // ==========================================
 
         const sql = `
 
@@ -376,17 +905,20 @@ app.post(
                         err
                     );
 
-                    return res.status(500).json({
+                    return res
+                        .status(500)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Failed to save medicine.",
+                            message:
+                                "Failed to save medicine.",
 
-                        error:
-                            err.message
+                            error:
+                                err.message
 
-                    });
+                        });
 
                 }
 
@@ -401,17 +933,20 @@ app.post(
                 );
 
 
-                return res.status(200).json({
+                return res
+                    .status(200)
+                    .json({
 
-                    success: true,
+                        success:
+                            true,
 
-                    message:
-                        "Medicine saved successfully!",
+                        message:
+                            "Medicine saved successfully!",
 
-                    id:
-                        result.insertId
+                        id:
+                            result.insertId
 
-                });
+                    });
 
             }
 
@@ -460,24 +995,29 @@ app.get(
                         err
                     );
 
-                    return res.status(500).json({
+                    return res
+                        .status(500)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Failed to fetch medicines.",
+                            message:
+                                "Failed to fetch medicines.",
 
-                        error:
-                            err.message
+                            error:
+                                err.message
 
-                    });
+                        });
 
                 }
 
 
                 return res
                     .status(200)
-                    .json(results);
+                    .json(
+                        results
+                    );
 
             }
 
@@ -532,17 +1072,20 @@ app.get(
                         err
                     );
 
-                    return res.status(500).json({
+                    return res
+                        .status(500)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Failed to fetch medicine.",
+                            message:
+                                "Failed to fetch medicine.",
 
-                        error:
-                            err.message
+                            error:
+                                err.message
 
-                    });
+                        });
 
                 }
 
@@ -551,21 +1094,26 @@ app.get(
                     results.length === 0
                 ) {
 
-                    return res.status(404).json({
+                    return res
+                        .status(404)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Medicine not found."
+                            message:
+                                "Medicine not found."
 
-                    });
+                        });
 
                 }
 
 
                 return res
                     .status(200)
-                    .json(results[0]);
+                    .json(
+                        results[0]
+                    );
 
             }
 
@@ -624,14 +1172,17 @@ app.put(
 
         ) {
 
-            return res.status(400).json({
+            return res
+                .status(400)
+                .json({
 
-                success: false,
+                    success:
+                        false,
 
-                message:
-                    "Required update data is missing."
+                    message:
+                        "Required update data is missing."
 
-            });
+                });
 
         }
 
@@ -686,17 +1237,20 @@ app.put(
                         err
                     );
 
-                    return res.status(500).json({
+                    return res
+                        .status(500)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Failed to update medicine.",
+                            message:
+                                "Failed to update medicine.",
 
-                        error:
-                            err.message
+                            error:
+                                err.message
 
-                    });
+                        });
 
                 }
 
@@ -705,26 +1259,32 @@ app.put(
                     result.affectedRows === 0
                 ) {
 
-                    return res.status(404).json({
+                    return res
+                        .status(404)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Medicine not found."
+                            message:
+                                "Medicine not found."
 
-                    });
+                        });
 
                 }
 
 
-                return res.status(200).json({
+                return res
+                    .status(200)
+                    .json({
 
-                    success: true,
+                        success:
+                            true,
 
-                    message:
-                        "Medicine updated successfully!"
+                        message:
+                            "Medicine updated successfully!"
 
-                });
+                    });
 
             }
 
@@ -770,17 +1330,20 @@ app.delete(
                         err
                     );
 
-                    return res.status(500).json({
+                    return res
+                        .status(500)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Failed to delete medicine.",
+                            message:
+                                "Failed to delete medicine.",
 
-                        error:
-                            err.message
+                            error:
+                                err.message
 
-                    });
+                        });
 
                 }
 
@@ -789,26 +1352,32 @@ app.delete(
                     result.affectedRows === 0
                 ) {
 
-                    return res.status(404).json({
+                    return res
+                        .status(404)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Medicine not found."
+                            message:
+                                "Medicine not found."
 
-                    });
+                        });
 
                 }
 
 
-                return res.status(200).json({
+                return res
+                    .status(200)
+                    .json({
 
-                    success: true,
+                        success:
+                            true,
 
-                    message:
-                        "Medicine deleted successfully!"
+                        message:
+                            "Medicine deleted successfully!"
 
-                });
+                    });
 
             }
 
@@ -819,7 +1388,7 @@ app.delete(
 
 
 // ==================================================
-// SAVE HISTORY
+// SAVE MEDICINE HISTORY
 // ==================================================
 
 app.post(
@@ -857,37 +1426,183 @@ app.post(
         } = req.body;
 
 
+        // ==========================================
+        // CHECK REQUIRED FIELDS
+        // ==========================================
+
+        const missingFields = [];
+
+
         if (
-
             !username ||
-
-            !medicine_id ||
-
-            !medicine_name ||
-
-            !dosage ||
-
-            !reminder_time ||
-
-            !status ||
-
-            !history_date ||
-
-            !history_time
-
+            String(username).trim() === ""
         ) {
 
-            return res.status(400).json({
-
-                success: false,
-
-                message:
-                    "Required history data is missing."
-
-            });
+            missingFields.push(
+                "username"
+            );
 
         }
 
+
+        if (
+            medicine_id === undefined ||
+            medicine_id === null ||
+            String(medicine_id).trim() === ""
+        ) {
+
+            missingFields.push(
+                "medicine_id"
+            );
+
+        }
+
+
+        if (
+            !medicine_name ||
+            String(medicine_name).trim() === ""
+        ) {
+
+            missingFields.push(
+                "medicine_name"
+            );
+
+        }
+
+
+        if (
+            dosage === undefined ||
+            dosage === null ||
+            String(dosage).trim() === ""
+        ) {
+
+            missingFields.push(
+                "dosage"
+            );
+
+        }
+
+
+        if (
+            !reminder_time ||
+            String(reminder_time).trim() === ""
+        ) {
+
+            missingFields.push(
+                "reminder_time"
+            );
+
+        }
+
+
+        if (
+            !status ||
+            String(status).trim() === ""
+        ) {
+
+            missingFields.push(
+                "status"
+            );
+
+        }
+
+
+        if (
+            !history_date ||
+            String(history_date).trim() === ""
+        ) {
+
+            missingFields.push(
+                "history_date"
+            );
+
+        }
+
+
+        if (
+            !history_time ||
+            String(history_time).trim() === ""
+        ) {
+
+            missingFields.push(
+                "history_time"
+            );
+
+        }
+
+
+        if (
+            missingFields.length > 0
+        ) {
+
+            console.log(
+                "❌ Missing history fields:",
+                missingFields
+            );
+
+
+            return res
+                .status(400)
+                .json({
+
+                    success:
+                        false,
+
+                    message:
+                        "Required history data is missing.",
+
+                    missingFields:
+                        missingFields
+
+                });
+
+        }
+
+
+        // ==========================================
+        // CHECK MEDICINE ID
+        // ==========================================
+
+        const numericMedicineId =
+            Number(
+                medicine_id
+            );
+
+
+        if (
+            !Number.isInteger(
+                numericMedicineId
+            ) ||
+            numericMedicineId <= 0
+        ) {
+
+            console.log(
+                "❌ Invalid medicine ID:",
+                medicine_id
+            );
+
+
+            return res
+                .status(400)
+                .json({
+
+                    success:
+                        false,
+
+                    message:
+                        "Invalid medicine_id.",
+
+                    received:
+                        medicine_id
+
+                });
+
+        }
+
+
+        // ==========================================
+        // CHECK STATUS
+        // ==========================================
 
         const allowedStatuses = [
 
@@ -901,20 +1616,35 @@ app.post(
 
 
         if (
-            !allowedStatuses.includes(status)
+            !allowedStatuses.includes(
+                status
+            )
         ) {
 
-            return res.status(400).json({
+            return res
+                .status(400)
+                .json({
 
-                success: false,
+                    success:
+                        false,
 
-                message:
-                    "Invalid history status."
+                    message:
+                        "Invalid history status.",
 
-            });
+                    allowedStatuses:
+                        allowedStatuses,
+
+                    received:
+                        status
+
+                });
 
         }
 
+
+        // ==========================================
+        // INSERT SQL
+        // ==========================================
 
         const sql = `
 
@@ -935,29 +1665,59 @@ app.post(
         `;
 
 
+        const values = [
+
+            String(
+                username
+            ).trim(),
+
+            numericMedicineId,
+
+            String(
+                medicine_name
+            ).trim(),
+
+            String(
+                dosage
+            ).trim(),
+
+            String(
+                reminder_time
+            ).substring(
+                0,
+                8
+            ),
+
+            status,
+
+            String(
+                history_date
+            ).substring(
+                0,
+                10
+            ),
+
+            String(
+                history_time
+            ).substring(
+                0,
+                8
+            )
+
+        ];
+
+
+        console.log(
+            "📤 History SQL values:",
+            values
+        );
+
+
         db.query(
 
             sql,
 
-            [
-
-                username,
-
-                medicine_id,
-
-                medicine_name,
-
-                dosage,
-
-                reminder_time,
-
-                status,
-
-                history_date,
-
-                history_time
-
-            ],
+            values,
 
             (err, result) => {
 
@@ -968,17 +1728,21 @@ app.post(
                         err
                     );
 
-                    return res.status(500).json({
 
-                        success: false,
+                    return res
+                        .status(500)
+                        .json({
 
-                        message:
-                            "Failed to save medicine history.",
+                            success:
+                                false,
 
-                        error:
-                            err.message
+                            message:
+                                "Failed to save medicine history.",
 
-                    });
+                            error:
+                                err.message
+
+                        });
 
                 }
 
@@ -988,17 +1752,26 @@ app.post(
                 );
 
 
-                return res.status(200).json({
+                console.log(
+                    "🆔 History ID:",
+                    result.insertId
+                );
 
-                    success: true,
 
-                    message:
-                        "Medicine history saved successfully!",
+                return res
+                    .status(201)
+                    .json({
 
-                    id:
-                        result.insertId
+                        success:
+                            true,
 
-                });
+                        message:
+                            "Medicine history saved successfully!",
+
+                        id:
+                            result.insertId
+
+                    });
 
             }
 
@@ -1058,24 +1831,29 @@ app.get(
                         err
                     );
 
-                    return res.status(500).json({
+                    return res
+                        .status(500)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Failed to fetch medicine history.",
+                            message:
+                                "Failed to fetch medicine history.",
 
-                        error:
-                            err.message
+                            error:
+                                err.message
 
-                    });
+                        });
 
                 }
 
 
                 return res
                     .status(200)
-                    .json(results);
+                    .json(
+                        results
+                    );
 
             }
 
@@ -1121,17 +1899,20 @@ app.delete(
                         err
                     );
 
-                    return res.status(500).json({
+                    return res
+                        .status(500)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "Failed to delete history.",
+                            message:
+                                "Failed to delete history.",
 
-                        error:
-                            err.message
+                            error:
+                                err.message
 
-                    });
+                        });
 
                 }
 
@@ -1140,26 +1921,32 @@ app.delete(
                     result.affectedRows === 0
                 ) {
 
-                    return res.status(404).json({
+                    return res
+                        .status(404)
+                        .json({
 
-                        success: false,
+                            success:
+                                false,
 
-                        message:
-                            "History record not found."
+                            message:
+                                "History record not found."
 
-                    });
+                        });
 
                 }
 
 
-                return res.status(200).json({
+                return res
+                    .status(200)
+                    .json({
 
-                    success: true,
+                        success:
+                            true,
 
-                    message:
-                        "History deleted successfully!"
+                        message:
+                            "History deleted successfully!"
 
-                });
+                    });
 
             }
 
@@ -1176,14 +1963,17 @@ app.delete(
 app.use(
     (req, res) => {
 
-        res.status(404).json({
+        res
+            .status(404)
+            .json({
 
-            success: false,
+                success:
+                    false,
 
-            message:
-                "API route not found."
+                message:
+                    "API route not found."
 
-        });
+            });
 
     }
 );
@@ -1194,7 +1984,8 @@ app.use(
 // ==================================================
 
 const PORT =
-    process.env.PORT || 5000;
+    process.env.PORT ||
+    5000;
 
 
 app.listen(
