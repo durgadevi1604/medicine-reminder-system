@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -172,6 +173,13 @@
 
 <script>
 
+// ==========================================
+// RAILWAY BACKEND URL
+// ==========================================
+
+const API_URL =
+    "https://medicine-reminder-system-production.up.railway.app";
+
 
 // ==========================================
 // SAVE BUTTON
@@ -332,7 +340,7 @@ async function saveMedicine() {
 
 
     // ======================================
-    // LIFELONG
+    // LIFELONG MEDICINE
     // ======================================
 
     if (
@@ -390,7 +398,7 @@ async function saveMedicine() {
 
 
     console.log(
-        "📤 Sending medicine:",
+        "📤 Sending medicine to Railway:",
         medicineData
     );
 
@@ -427,17 +435,17 @@ async function saveMedicine() {
                     controller.abort();
 
                 },
-                10000
+                15000
             );
 
 
         // ==================================
-        // SEND TO BACKEND
+        // SEND TO RAILWAY BACKEND
         // ==================================
 
         const response =
             await fetch(
-                "http://127.0.0.1:5000/api/medicines",
+                `${API_URL}/api/medicines`,
                 {
                     method: "POST",
 
@@ -464,22 +472,25 @@ async function saveMedicine() {
             timeoutId
         );
 
-
         timeoutId = null;
 
 
         console.log(
-            "📡 Backend status:",
+            "📡 Railway Backend status:",
             response.status
         );
 
+
+        // ==================================
+        // READ RESPONSE
+        // ==================================
 
         const result =
             await response.json();
 
 
         console.log(
-            "📥 Backend response:",
+            "📥 Railway Backend response:",
             result
         );
 
@@ -598,6 +609,8 @@ async function saveMedicine() {
             time +
             "\n\n" +
 
+            "✅ Railway Backend Connected\n" +
+
             "✅ MySQL Database Saved\n" +
 
             "✅ QR Code Generated"
@@ -623,9 +636,9 @@ async function saveMedicine() {
 
             alert(
 
-                "❌ Backend response timed out.\n\n" +
+                "❌ Railway backend response timed out.\n\n" +
 
-                "Please make sure server.js is running."
+                "Please check your Railway deployment."
 
             );
 

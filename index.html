@@ -7,6 +7,14 @@
 
     <title>Medicine Reminder System</title>
 
+    <!-- ================= PWA ================= -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#075bea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Medicine Reminder">
+
     <link rel="stylesheet" href="style.css">
 
     <!-- ================= LOGO STYLE ================= -->
@@ -37,13 +45,10 @@
 
 <body>
 
-<!-- ================= HEADER ================= -->
-
 <header class="top-header">
 
     <div class="logo-section">
 
-        <!-- PROJECT LOGO -->
         <img
             src="logo.png"
             alt="Medicine Reminder System Logo"
@@ -52,22 +57,15 @@
 
         <div class="logo-section-text">
 
-            <h1>
-                Medicine Reminder System
-            </h1>
+            <h1>Medicine Reminder System</h1>
 
-            <p>
-                Using QR Code
-            </p>
+            <p>Using QR Code</p>
 
         </div>
 
     </div>
 
-
     <div class="profile-section">
-
-        <!-- NOTIFICATION BELL -->
 
         <div class="notification"
              onclick="showNotifications()"
@@ -78,9 +76,6 @@
             <span id="notificationCount">0</span>
 
         </div>
-
-
-        <!-- PROFILE -->
 
         <div class="profile">
 
@@ -103,22 +98,15 @@
 </header>
 
 
-
-<!-- ================= MAIN LAYOUT ================= -->
-
 <div class="dashboard-layout">
 
 
-    <!-- ================= SIDEBAR ================= -->
-
     <aside class="sidebar">
-
 
         <button class="side-btn active"
                 onclick="window.location.href='index.html'">
 
             🏠
-
             <span>Dashboard</span>
 
         </button>
@@ -128,7 +116,6 @@
                 onclick="window.location.href='add-medicine.html'">
 
             💊
-
             <span>Add Medicine</span>
 
         </button>
@@ -138,7 +125,6 @@
                 onclick="window.location.href='medicine-list.html'">
 
             💊
-
             <span>My Medicines</span>
 
         </button>
@@ -148,13 +134,10 @@
                 onclick="window.location.href='scanner.html'">
 
             📷
-
             <span>Scan QR Code</span>
 
         </button>
 
-
-        <!-- SIDEBAR NOTIFICATION -->
 
         <div class="notification"
              onclick="showNotifications()"
@@ -167,43 +150,32 @@
         </div>
 
 
-        <!-- REPORTS -->
-
         <button class="side-btn"
                 onclick="window.location.href='reports.html'">
 
             📊
-
             <span>Reports</span>
 
         </button>
 
 
-        <!-- SETTINGS -->
-
         <button class="side-btn"
                 onclick="window.location.href='settings.html'">
 
             ⚙️
-
             <span>Settings</span>
 
         </button>
 
 
-        <!-- HELP -->
-
         <button class="side-btn"
                 onclick="window.location.href='help.html'">
 
             ❓
-
             <span>Help & Support</span>
 
         </button>
 
-
-        <!-- HEALTH CARD -->
 
         <div class="health-card">
 
@@ -231,13 +203,8 @@
     </aside>
 
 
-
-    <!-- ================= CONTENT ================= -->
-
     <main class="main-content">
 
-
-        <!-- ================= WELCOME ================= -->
 
         <section class="welcome-section">
 
@@ -264,13 +231,8 @@
         </section>
 
 
-
-        <!-- ================= QUICK ACTIONS ================= -->
-
         <section class="quick-actions">
 
-
-            <!-- ADD MEDICINE -->
 
             <div class="action-card add-card"
                  onclick="window.location.href='add-medicine.html'">
@@ -299,9 +261,6 @@
             </div>
 
 
-
-            <!-- MY MEDICINES -->
-
             <div class="action-card medicine-card"
                  onclick="window.location.href='medicine-list.html'">
 
@@ -328,9 +287,6 @@
 
             </div>
 
-
-
-            <!-- SCAN QR -->
 
             <div class="action-card qr-card"
                  onclick="window.location.href='scanner.html'">
@@ -361,13 +317,8 @@
         </section>
 
 
-
-        <!-- ================= LOWER SECTION ================= -->
-
         <section class="dashboard-grid">
 
-
-            <!-- ================= MEDICINE DETAILS ================= -->
 
             <div class="medicine-details">
 
@@ -395,8 +346,6 @@
                     <div class="details-list">
 
 
-                        <!-- NAME -->
-
                         <div class="detail-row">
 
                             <span class="detail-icon">
@@ -407,9 +356,7 @@
                                 Name
                             </strong>
 
-                            <span>
-                                :
-                            </span>
+                            <span>:</span>
 
                             <span id="name">
                                 -
@@ -417,9 +364,6 @@
 
                         </div>
 
-
-
-                        <!-- DOSAGE -->
 
                         <div class="detail-row">
 
@@ -431,9 +375,7 @@
                                 Dosage
                             </strong>
 
-                            <span>
-                                :
-                            </span>
+                            <span>:</span>
 
                             <span id="dose">
                                 -
@@ -441,9 +383,6 @@
 
                         </div>
 
-
-
-                        <!-- TIME -->
 
                         <div class="detail-row">
 
@@ -455,9 +394,7 @@
                                 Time
                             </strong>
 
-                            <span>
-                                :
-                            </span>
+                            <span>:</span>
 
                             <span id="time">
                                 -
@@ -465,9 +402,6 @@
 
                         </div>
 
-
-
-                        <!-- START DATE -->
 
                         <div class="detail-row">
 
@@ -479,9 +413,7 @@
                                 Start Date
                             </strong>
 
-                            <span>
-                                :
-                            </span>
+                            <span>:</span>
 
                             <span id="startDate">
                                 -
@@ -489,9 +421,6 @@
 
                         </div>
 
-
-
-                        <!-- END DATE -->
 
                         <div class="detail-row">
 
@@ -503,9 +432,7 @@
                                 End Date
                             </strong>
 
-                            <span>
-                                :
-                            </span>
+                            <span>:</span>
 
                             <span id="endDate">
                                 -
@@ -518,7 +445,6 @@
                 </div>
 
 
-
                 <button class="save-btn"
                         onclick="saveReminder()">
 
@@ -528,9 +454,6 @@
 
             </div>
 
-
-
-            <!-- ================= UPCOMING REMINDER ================= -->
 
             <div class="reminder-card">
 
@@ -572,9 +495,6 @@
         </section>
 
 
-
-        <!-- ================= TIP ================= -->
-
         <div class="tip-box">
 
             💡
@@ -590,9 +510,6 @@
         </div>
 
 
-
-        <!-- ================= LOGOUT ================= -->
-
         <button class="logout-btn"
                 onclick="logout()">
 
@@ -606,18 +523,11 @@
 </div>
 
 
-
-<!-- ================= JAVASCRIPT ================= -->
-
 <script src="script.js"></script>
 
 
 <script>
 
-
-// ==================================================
-// CHECK LOGIN
-// ==================================================
 
 let loggedInUser =
     localStorage.getItem("loggedInUser");
@@ -648,10 +558,6 @@ else {
 
 
 
-// ==================================================
-// GET CURRENT PATIENT MEDICINES
-// ==================================================
-
 function getMyMedicines() {
 
     const medicines =
@@ -672,10 +578,6 @@ function getMyMedicines() {
 }
 
 
-
-// ==================================================
-// UPDATE NOTIFICATION COUNT
-// ==================================================
 
 function updateNotificationCount() {
 
@@ -717,10 +619,6 @@ function updateNotificationCount() {
 }
 
 
-
-// ==================================================
-// SHOW NOTIFICATIONS
-// ==================================================
 
 function showNotifications() {
 
@@ -800,10 +698,6 @@ function showNotifications() {
 
 
 
-// ==================================================
-// AUTOMATIC MEDICINE REMINDER
-// ==================================================
-
 function checkMedicineReminders() {
 
     const myMedicines =
@@ -820,8 +714,6 @@ function checkMedicineReminders() {
     const now =
         new Date();
 
-
-    // Current Date
 
     const year =
         now.getFullYear();
@@ -847,9 +739,6 @@ function checkMedicineReminders() {
         day;
 
 
-
-    // Current Time
-
     const currentHour =
         String(
             now.getHours()
@@ -868,14 +757,9 @@ function checkMedicineReminders() {
         currentMinute;
 
 
-
-    // Check Medicines
-
     myMedicines.forEach(
         function (medicine) {
 
-
-            // Check Time
 
             if (
                 medicine.time !==
@@ -887,9 +771,6 @@ function checkMedicineReminders() {
             }
 
 
-
-            // Check Start Date
-
             if (
                 medicine.start &&
                 today < medicine.start
@@ -899,9 +780,6 @@ function checkMedicineReminders() {
 
             }
 
-
-
-            // Check End Date
 
             if (
                 medicine.end &&
@@ -913,9 +791,6 @@ function checkMedicineReminders() {
 
             }
 
-
-
-            // Prevent Duplicate Alert
 
             const reminderKey =
                 "reminder_" +
@@ -939,9 +814,6 @@ function checkMedicineReminders() {
             }
 
 
-
-            // Reminder Alert
-
             alert(
                 "💊 MEDICINE REMINDER!\n\n" +
 
@@ -958,7 +830,6 @@ function checkMedicineReminders() {
             );
 
 
-
             sessionStorage.setItem(
                 reminderKey,
                 "shown"
@@ -970,10 +841,6 @@ function checkMedicineReminders() {
 }
 
 
-
-// ==================================================
-// LOAD LATEST MEDICINE DETAILS
-// ==================================================
 
 function loadLatestMedicine() {
 
@@ -988,16 +855,11 @@ function loadLatestMedicine() {
     }
 
 
-    // Get latest medicine
-
     const medicine =
         myMedicines[
             myMedicines.length - 1
         ];
 
-
-
-    // Medicine Details
 
     document.getElementById(
         "name"
@@ -1029,9 +891,6 @@ function loadLatestMedicine() {
         medicine.end || "-";
 
 
-
-    // Upcoming Reminder
-
     document.getElementById(
         "upcomingTime"
     ).textContent =
@@ -1055,10 +914,6 @@ function loadLatestMedicine() {
 
 
 
-// ==================================================
-// START AUTOMATIC REMINDER
-// ==================================================
-
 checkMedicineReminders();
 
 
@@ -1068,10 +923,6 @@ setInterval(
 );
 
 
-
-// ==================================================
-// LOGOUT
-// ==================================================
 
 function logout() {
 
@@ -1092,19 +943,44 @@ function logout() {
 
 
 
-// ==================================================
-// UPDATE NOTIFICATION COUNT
-// ==================================================
-
 updateNotificationCount();
 
 
-// ==================================================
-// LOAD MEDICINE DETAILS
-// ==================================================
-
 loadLatestMedicine();
 
+
+// ==================================================
+// SERVICE WORKER REGISTRATION
+// ==================================================
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            navigator.serviceWorker
+                .register("service-worker.js")
+                .then(function () {
+
+                    console.log(
+                        "✅ Service Worker registered successfully."
+                    );
+
+                })
+                .catch(function (error) {
+
+                    console.log(
+                        "❌ Service Worker registration failed:",
+                        error
+                    );
+
+                });
+
+        }
+    );
+
+}
 
 </script>
 

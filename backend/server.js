@@ -1,24 +1,68 @@
+// ==================================================
+// MEDICINE REMINDER SYSTEM
+// BACKEND SERVER
+// ==================================================
+
 require("dotenv").config();
 
 const express = require("express");
 const mysql = require("mysql2");
-const cors = require("cors");
 
 const app = express();
 
 
 // ==================================================
-// CORS
+// CORS - MANUAL
+// ==================================================
+// Express 5 compatible
+// Handles frontend from Live Server / Railway
 // ==================================================
 
-app.use(
-    cors({
-        origin: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: false
-    })
-);
+app.use((req, res, next) => {
+
+    const origin = req.headers.origin;
+
+    if (origin) {
+        res.setHeader(
+            "Access-Control-Allow-Origin",
+            origin
+        );
+    } else {
+        res.setHeader(
+            "Access-Control-Allow-Origin",
+            "*"
+        );
+    }
+
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET,POST,PUT,DELETE,OPTIONS"
+    );
+
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization"
+    );
+
+    res.setHeader(
+        "Access-Control-Max-Age",
+        "86400"
+    );
+
+    // Preflight request
+    if (req.method === "OPTIONS") {
+
+        console.log(
+            `🟢 CORS preflight: ${req.headers.origin || "unknown"}`
+        );
+
+        return res.status(204).end();
+
+    }
+
+    next();
+
+});
 
 
 // ==================================================
@@ -33,8 +77,13 @@ app.use(express.json());
 // ==================================================
 
 app.use((req, res, next) => {
-    console.log(`📡 ${req.method} ${req.originalUrl}`);
+
+    console.log(
+        `📡 ${req.method} ${req.originalUrl}`
+    );
+
     next();
+
 });
 
 
@@ -52,7 +101,8 @@ const db = mysql.createPool({
 
     database: process.env.DB_NAME,
 
-    port: Number(process.env.DB_PORT) || 3306,
+    port:
+        Number(process.env.DB_PORT) || 3306,
 
     dateStrings: true,
 
@@ -77,20 +127,28 @@ const db = mysql.createPool({
 // MYSQL CONNECTION TEST
 // ==================================================
 
-db.query("SELECT 1", (err) => {
+db.query(
+    "SELECT 1",
+    (err) => {
 
-    if (err) {
+        if (err) {
 
-        console.error("❌ MySQL connection failed:");
-        console.error(err);
+            console.error(
+                "❌ MySQL connection failed:"
+            );
 
-    } else {
+            console.error(err);
 
-        console.log("✅ MySQL connected successfully!");
+        } else {
+
+            console.log(
+                "✅ MySQL connected successfully!"
+            );
+
+        }
 
     }
-
-});
+);
 
 
 // ==================================================
@@ -99,22 +157,27 @@ db.query("SELECT 1", (err) => {
 
 setInterval(() => {
 
-    db.query("SELECT 1", (err) => {
+    db.query(
+        "SELECT 1",
+        (err) => {
 
-        if (err) {
+            if (err) {
 
-            console.error(
-                "⚠️ MySQL keep-alive failed:",
-                err.message
-            );
+                console.error(
+                    "⚠️ MySQL keep-alive failed:",
+                    err.message
+                );
 
-        } else {
+            } else {
 
-            console.log("💚 MySQL keep-alive OK");
+                console.log(
+                    "💚 MySQL keep-alive OK"
+                );
+
+            }
 
         }
-
-    });
+    );
 
 }, 30000);
 
@@ -123,826 +186,1015 @@ setInterval(() => {
 // TEST BACKEND
 // ==================================================
 
-app.get("/", (req, res) => {
+app.get(
+    "/",
+    (req, res) => {
 
-    res.status(200).json({
+        res.status(200).json({
 
-        success: true,
+            success: true,
 
-        message: "Medicine Reminder Backend is Running!"
+            message:
+                "Medicine Reminder Backend is Running!"
 
-    });
+        });
 
-});
+    }
+);
 
 
 // ==================================================
 // HEALTH CHECK
 // ==================================================
 
-app.get("/health", (req, res) => {
+app.get(
+    "/health",
+    (req, res) => {
 
-    db.query("SELECT 1", (err) => {
+        db.query(
+            "SELECT 1",
+            (err) => {
 
-        if (err) {
+                if (err) {
 
-            return res.status(500).json({
+                    return res.status(500).json({
 
-                success: false,
+                        success: false,
 
-                server: "online",
+                        server: "online",
 
-                database: "disconnected",
+                        database: "disconnected",
 
-                error: err.message
+                        error:
+                            err.message
 
-            });
+                    });
 
-        }
+                }
 
-        res.status(200).json({
+                res.status(200).json({
 
-            success: true,
+                    success: true,
 
-            server: "online",
+                    server: "online",
 
-            database: "connected"
+                    database: "connected"
 
-        });
+                });
 
-    });
+            }
+        );
 
-});
+    }
+);
 
 
 // ==================================================
 // SAVE MEDICINE
 // ==================================================
 
-app.post("/api/medicines", (req, res) => {
+app.post(
+    "/api/medicines",
+    (req, res) => {
 
-    console.log("📥 POST /api/medicines");
+        console.log(
+            "📥 POST /api/medicines"
+        );
 
-    console.log("📦 Medicine received:", req.body);
-
-
-    const {
-        username,
-        medicine,
-        dosage,
-        time,
-        start,
-        end
-    } = req.body;
+        console.log(
+            "📦 Medicine received:",
+            req.body
+        );
 
 
-    // ==================================================
-    // VALIDATION
-    // ==================================================
+        const {
 
-    if (
-        !username ||
-        !medicine ||
-        !dosage ||
-        !time ||
-        !start
-    ) {
-
-        console.log("❌ Required medicine data missing");
-
-        return res.status(400).json({
-
-            success: false,
-
-            message: "Required medicine data is missing."
-
-        });
-
-    }
-
-
-    // ==================================================
-    // END DATE
-    // ==================================================
-
-    const finalEndDate = end || "9999-12-31";
-
-
-    // ==================================================
-    // SQL
-    // ==================================================
-
-    const sql = `
-
-        INSERT INTO medicines
-        (
             username,
-            medicine_name,
-            dosage,
-            reminder_time,
-            start_date,
-            end_date
-        )
 
-        VALUES (?, ?, ?, ?, ?, ?)
-
-    `;
-
-
-    db.query(
-
-        sql,
-
-        [
-            username,
             medicine,
+
             dosage,
+
             time,
+
             start,
-            finalEndDate
-        ],
 
-        (err, result) => {
+            end
 
-            if (err) {
-
-                console.error(
-                    "❌ Medicine Database Error:",
-                    err
-                );
-
-                return res.status(500).json({
-
-                    success: false,
-
-                    message: "Failed to save medicine.",
-
-                    error: err.message
-
-                });
-
-            }
+        } = req.body;
 
 
-            console.log("✅ Medicine saved to MySQL!");
+        // ==========================================
+        // VALIDATION
+        // ==========================================
+
+        if (
+
+            !username ||
+
+            !medicine ||
+
+            !dosage ||
+
+            !time ||
+
+            !start
+
+        ) {
 
             console.log(
-                "🆔 Medicine ID:",
-                result.insertId
+                "❌ Required medicine data missing"
             );
 
+            return res.status(400).json({
 
-            return res.status(200).json({
+                success: false,
 
-                success: true,
-
-                message: "Medicine saved successfully!",
-
-                id: result.insertId
+                message:
+                    "Required medicine data is missing."
 
             });
 
         }
 
-    );
 
-});
+        // ==========================================
+        // END DATE
+        // ==========================================
+
+        const finalEndDate =
+            end || "9999-12-31";
+
+
+        // ==========================================
+        // INSERT
+        // ==========================================
+
+        const sql = `
+
+            INSERT INTO medicines
+            (
+                username,
+                medicine_name,
+                dosage,
+                reminder_time,
+                start_date,
+                end_date
+            )
+
+            VALUES (?, ?, ?, ?, ?, ?)
+
+        `;
+
+
+        db.query(
+
+            sql,
+
+            [
+
+                username,
+
+                medicine,
+
+                dosage,
+
+                time,
+
+                start,
+
+                finalEndDate
+
+            ],
+
+            (err, result) => {
+
+                if (err) {
+
+                    console.error(
+                        "❌ Medicine Database Error:",
+                        err
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Failed to save medicine.",
+
+                        error:
+                            err.message
+
+                    });
+
+                }
+
+
+                console.log(
+                    "✅ Medicine saved to MySQL!"
+                );
+
+                console.log(
+                    "🆔 Medicine ID:",
+                    result.insertId
+                );
+
+
+                return res.status(200).json({
+
+                    success: true,
+
+                    message:
+                        "Medicine saved successfully!",
+
+                    id:
+                        result.insertId
+
+                });
+
+            }
+
+        );
+
+    }
+);
 
 
 // ==================================================
 // GET ALL MEDICINES
 // ==================================================
 
-app.get("/api/medicines", (req, res) => {
+app.get(
+    "/api/medicines",
+    (req, res) => {
 
-    const sql = `
+        const sql = `
 
-        SELECT
-            id,
-            username,
-            medicine_name,
-            dosage,
-            reminder_time,
-            start_date,
-            end_date
+            SELECT
+                id,
+                username,
+                medicine_name,
+                dosage,
+                reminder_time,
+                start_date,
+                end_date
 
-        FROM medicines
+            FROM medicines
 
-        ORDER BY id DESC
+            ORDER BY id DESC
 
-    `;
+        `;
 
 
-    db.query(
+        db.query(
 
-        sql,
+            sql,
 
-        (err, results) => {
+            (err, results) => {
 
-            if (err) {
+                if (err) {
 
-                console.error(
-                    "❌ Database Error:",
-                    err
-                );
+                    console.error(
+                        "❌ Database Error:",
+                        err
+                    );
 
-                return res.status(500).json({
+                    return res.status(500).json({
 
-                    success: false,
+                        success: false,
 
-                    message: "Failed to fetch medicines.",
+                        message:
+                            "Failed to fetch medicines.",
 
-                    error: err.message
+                        error:
+                            err.message
 
-                });
+                    });
+
+                }
+
+
+                return res
+                    .status(200)
+                    .json(results);
 
             }
 
+        );
 
-            return res.status(200).json(results);
-
-        }
-
-    );
-
-});
+    }
+);
 
 
 // ==================================================
 // GET SINGLE MEDICINE
 // ==================================================
 
-app.get("/api/medicines/:id", (req, res) => {
+app.get(
+    "/api/medicines/:id",
+    (req, res) => {
 
-    const id = req.params.id;
-
-
-    const sql = `
-
-        SELECT
-            id,
-            username,
-            medicine_name,
-            dosage,
-            reminder_time,
-            start_date,
-            end_date
-
-        FROM medicines
-
-        WHERE id = ?
-
-    `;
+        const id =
+            req.params.id;
 
 
-    db.query(
+        const sql = `
 
-        sql,
+            SELECT
+                id,
+                username,
+                medicine_name,
+                dosage,
+                reminder_time,
+                start_date,
+                end_date
 
-        [id],
+            FROM medicines
 
-        (err, results) => {
+            WHERE id = ?
 
-            if (err) {
+        `;
 
-                console.error(
-                    "❌ Database Error:",
-                    err
-                );
 
-                return res.status(500).json({
+        db.query(
 
-                    success: false,
+            sql,
 
-                    message: "Failed to fetch medicine.",
+            [id],
 
-                    error: err.message
+            (err, results) => {
 
-                });
+                if (err) {
+
+                    console.error(
+                        "❌ Database Error:",
+                        err
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Failed to fetch medicine.",
+
+                        error:
+                            err.message
+
+                    });
+
+                }
+
+
+                if (
+                    results.length === 0
+                ) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message:
+                            "Medicine not found."
+
+                    });
+
+                }
+
+
+                return res
+                    .status(200)
+                    .json(results[0]);
 
             }
 
+        );
 
-            if (results.length === 0) {
-
-                return res.status(404).json({
-
-                    success: false,
-
-                    message: "Medicine not found."
-
-                });
-
-            }
-
-
-            return res.status(200).json(results[0]);
-
-        }
-
-    );
-
-});
+    }
+);
 
 
 // ==================================================
 // UPDATE MEDICINE
 // ==================================================
 
-app.put("/api/medicines/:id", (req, res) => {
+app.put(
+    "/api/medicines/:id",
+    (req, res) => {
 
-    const id = req.params.id;
-
-
-    const medicine =
-        req.body.medicine ||
-        req.body.medicine_name;
+        const id =
+            req.params.id;
 
 
-    const dosage =
-        req.body.dosage;
+        const medicine =
+            req.body.medicine ||
+            req.body.medicine_name;
 
 
-    const time =
-        req.body.time ||
-        req.body.reminder_time;
+        const dosage =
+            req.body.dosage;
 
 
-    const start =
-        req.body.start ||
-        req.body.start_date;
+        const time =
+            req.body.time ||
+            req.body.reminder_time;
 
 
-    const end =
-        req.body.end ||
-        req.body.end_date ||
-        "9999-12-31";
+        const start =
+            req.body.start ||
+            req.body.start_date;
 
 
-    if (
-        !medicine ||
-        !dosage ||
-        !time ||
-        !start
-    ) {
-
-        return res.status(400).json({
-
-            success: false,
-
-            message: "Required update data is missing."
-
-        });
-
-    }
+        const end =
+            req.body.end ||
+            req.body.end_date ||
+            "9999-12-31";
 
 
-    const sql = `
+        if (
 
-        UPDATE medicines
+            !medicine ||
 
-        SET
-            medicine_name = ?,
-            dosage = ?,
-            reminder_time = ?,
-            start_date = ?,
-            end_date = ?
+            !dosage ||
 
-        WHERE id = ?
+            !time ||
 
-    `;
+            !start
 
+        ) {
 
-    db.query(
+            return res.status(400).json({
 
-        sql,
+                success: false,
 
-        [
-            medicine,
-            dosage,
-            time,
-            start,
-            end,
-            id
-        ],
-
-        (err, result) => {
-
-            if (err) {
-
-                console.error(
-                    "❌ Database Error:",
-                    err
-                );
-
-                return res.status(500).json({
-
-                    success: false,
-
-                    message: "Failed to update medicine.",
-
-                    error: err.message
-
-                });
-
-            }
-
-
-            if (result.affectedRows === 0) {
-
-                return res.status(404).json({
-
-                    success: false,
-
-                    message: "Medicine not found."
-
-                });
-
-            }
-
-
-            return res.status(200).json({
-
-                success: true,
-
-                message: "Medicine updated successfully!"
+                message:
+                    "Required update data is missing."
 
             });
 
         }
 
-    );
 
-});
+        const sql = `
+
+            UPDATE medicines
+
+            SET
+
+                medicine_name = ?,
+
+                dosage = ?,
+
+                reminder_time = ?,
+
+                start_date = ?,
+
+                end_date = ?
+
+            WHERE id = ?
+
+        `;
+
+
+        db.query(
+
+            sql,
+
+            [
+
+                medicine,
+
+                dosage,
+
+                time,
+
+                start,
+
+                end,
+
+                id
+
+            ],
+
+            (err, result) => {
+
+                if (err) {
+
+                    console.error(
+                        "❌ Database Error:",
+                        err
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Failed to update medicine.",
+
+                        error:
+                            err.message
+
+                    });
+
+                }
+
+
+                if (
+                    result.affectedRows === 0
+                ) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message:
+                            "Medicine not found."
+
+                    });
+
+                }
+
+
+                return res.status(200).json({
+
+                    success: true,
+
+                    message:
+                        "Medicine updated successfully!"
+
+                });
+
+            }
+
+        );
+
+    }
+);
 
 
 // ==================================================
 // DELETE MEDICINE
 // ==================================================
 
-app.delete("/api/medicines/:id", (req, res) => {
+app.delete(
+    "/api/medicines/:id",
+    (req, res) => {
 
-    const id = req.params.id;
-
-
-    const sql = `
-
-        DELETE FROM medicines
-
-        WHERE id = ?
-
-    `;
+        const id =
+            req.params.id;
 
 
-    db.query(
+        const sql = `
 
-        sql,
+            DELETE FROM medicines
 
-        [id],
+            WHERE id = ?
 
-        (err, result) => {
+        `;
 
-            if (err) {
 
-                console.error(
-                    "❌ Database Error:",
-                    err
-                );
+        db.query(
 
-                return res.status(500).json({
+            sql,
 
-                    success: false,
+            [id],
 
-                    message: "Failed to delete medicine.",
+            (err, result) => {
 
-                    error: err.message
+                if (err) {
+
+                    console.error(
+                        "❌ Database Error:",
+                        err
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Failed to delete medicine.",
+
+                        error:
+                            err.message
+
+                    });
+
+                }
+
+
+                if (
+                    result.affectedRows === 0
+                ) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message:
+                            "Medicine not found."
+
+                    });
+
+                }
+
+
+                return res.status(200).json({
+
+                    success: true,
+
+                    message:
+                        "Medicine deleted successfully!"
 
                 });
 
             }
 
+        );
 
-            if (result.affectedRows === 0) {
-
-                return res.status(404).json({
-
-                    success: false,
-
-                    message: "Medicine not found."
-
-                });
-
-            }
-
-
-            return res.status(200).json({
-
-                success: true,
-
-                message: "Medicine deleted successfully!"
-
-            });
-
-        }
-
-    );
-
-});
+    }
+);
 
 
 // ==================================================
 // SAVE HISTORY
 // ==================================================
 
-app.post("/api/history", (req, res) => {
+app.post(
+    "/api/history",
+    (req, res) => {
 
-    console.log("📥 POST /api/history");
+        console.log(
+            "📥 POST /api/history"
+        );
 
-    console.log("📦 History received:", req.body);
-
-
-    const {
-        username,
-        medicine_id,
-        medicine_name,
-        dosage,
-        reminder_time,
-        status,
-        history_date,
-        history_time
-    } = req.body;
+        console.log(
+            "📦 History received:",
+            req.body
+        );
 
 
-    if (
-        !username ||
-        !medicine_id ||
-        !medicine_name ||
-        !dosage ||
-        !reminder_time ||
-        !status ||
-        !history_date ||
-        !history_time
-    ) {
+        const {
 
-        return res.status(400).json({
-
-            success: false,
-
-            message: "Required history data is missing."
-
-        });
-
-    }
-
-
-    const allowedStatuses = [
-        "Taken",
-        "Missed",
-        "Snoozed"
-    ];
-
-
-    if (!allowedStatuses.includes(status)) {
-
-        return res.status(400).json({
-
-            success: false,
-
-            message: "Invalid history status."
-
-        });
-
-    }
-
-
-    const sql = `
-
-        INSERT INTO medicine_history
-        (
             username,
+
             medicine_id,
+
             medicine_name,
+
             dosage,
+
             reminder_time,
+
             status,
+
             history_date,
+
             history_time
-        )
 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-
-    `;
+        } = req.body;
 
 
-    db.query(
+        if (
 
-        sql,
+            !username ||
 
-        [
-            username,
-            medicine_id,
-            medicine_name,
-            dosage,
-            reminder_time,
-            status,
-            history_date,
-            history_time
-        ],
+            !medicine_id ||
 
-        (err, result) => {
+            !medicine_name ||
 
-            if (err) {
+            !dosage ||
 
-                console.error(
-                    "❌ History Database Error:",
-                    err
-                );
+            !reminder_time ||
 
-                return res.status(500).json({
+            !status ||
 
-                    success: false,
+            !history_date ||
 
-                    message:
-                        "Failed to save medicine history.",
+            !history_time
 
-                    error: err.message
+        ) {
 
-                });
+            return res.status(400).json({
 
-            }
-
-
-            console.log("✅ History saved to MySQL!");
-
-
-            return res.status(200).json({
-
-                success: true,
+                success: false,
 
                 message:
-                    "Medicine history saved successfully!",
-
-                id: result.insertId
+                    "Required history data is missing."
 
             });
 
         }
 
-    );
 
-});
+        const allowedStatuses = [
+
+            "Taken",
+
+            "Missed",
+
+            "Snoozed"
+
+        ];
+
+
+        if (
+            !allowedStatuses.includes(status)
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Invalid history status."
+
+            });
+
+        }
+
+
+        const sql = `
+
+            INSERT INTO medicine_history
+            (
+                username,
+                medicine_id,
+                medicine_name,
+                dosage,
+                reminder_time,
+                status,
+                history_date,
+                history_time
+            )
+
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+
+        `;
+
+
+        db.query(
+
+            sql,
+
+            [
+
+                username,
+
+                medicine_id,
+
+                medicine_name,
+
+                dosage,
+
+                reminder_time,
+
+                status,
+
+                history_date,
+
+                history_time
+
+            ],
+
+            (err, result) => {
+
+                if (err) {
+
+                    console.error(
+                        "❌ History Database Error:",
+                        err
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Failed to save medicine history.",
+
+                        error:
+                            err.message
+
+                    });
+
+                }
+
+
+                console.log(
+                    "✅ History saved to MySQL!"
+                );
+
+
+                return res.status(200).json({
+
+                    success: true,
+
+                    message:
+                        "Medicine history saved successfully!",
+
+                    id:
+                        result.insertId
+
+                });
+
+            }
+
+        );
+
+    }
+);
 
 
 // ==================================================
 // GET USER HISTORY
 // ==================================================
 
-app.get("/api/history/:username", (req, res) => {
+app.get(
+    "/api/history/:username",
+    (req, res) => {
 
-    const username = req.params.username;
-
-
-    const sql = `
-
-        SELECT
-            id,
-            username,
-            medicine_id,
-            medicine_name,
-            dosage,
-            reminder_time,
-            status,
-            history_date,
-            history_time,
-            created_at
-
-        FROM medicine_history
-
-        WHERE username = ?
-
-        ORDER BY id DESC
-
-    `;
+        const username =
+            req.params.username;
 
 
-    db.query(
+        const sql = `
 
-        sql,
+            SELECT
+                id,
+                username,
+                medicine_id,
+                medicine_name,
+                dosage,
+                reminder_time,
+                status,
+                history_date,
+                history_time,
+                created_at
 
-        [username],
+            FROM medicine_history
 
-        (err, results) => {
+            WHERE username = ?
 
-            if (err) {
+            ORDER BY id DESC
 
-                console.error(
-                    "❌ Database Error:",
-                    err
-                );
+        `;
 
-                return res.status(500).json({
 
-                    success: false,
+        db.query(
 
-                    message:
-                        "Failed to fetch medicine history.",
+            sql,
 
-                    error: err.message
+            [username],
 
-                });
+            (err, results) => {
+
+                if (err) {
+
+                    console.error(
+                        "❌ Database Error:",
+                        err
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Failed to fetch medicine history.",
+
+                        error:
+                            err.message
+
+                    });
+
+                }
+
+
+                return res
+                    .status(200)
+                    .json(results);
 
             }
 
+        );
 
-            return res.status(200).json(results);
-
-        }
-
-    );
-
-});
+    }
+);
 
 
 // ==================================================
 // DELETE HISTORY
 // ==================================================
 
-app.delete("/api/history/:id", (req, res) => {
+app.delete(
+    "/api/history/:id",
+    (req, res) => {
 
-    const id = req.params.id;
-
-
-    const sql = `
-
-        DELETE FROM medicine_history
-
-        WHERE id = ?
-
-    `;
+        const id =
+            req.params.id;
 
 
-    db.query(
+        const sql = `
 
-        sql,
+            DELETE FROM medicine_history
 
-        [id],
+            WHERE id = ?
 
-        (err, result) => {
+        `;
 
-            if (err) {
 
-                console.error(
-                    "❌ Database Error:",
-                    err
-                );
+        db.query(
 
-                return res.status(500).json({
+            sql,
 
-                    success: false,
+            [id],
+
+            (err, result) => {
+
+                if (err) {
+
+                    console.error(
+                        "❌ Database Error:",
+                        err
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Failed to delete history.",
+
+                        error:
+                            err.message
+
+                    });
+
+                }
+
+
+                if (
+                    result.affectedRows === 0
+                ) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message:
+                            "History record not found."
+
+                    });
+
+                }
+
+
+                return res.status(200).json({
+
+                    success: true,
 
                     message:
-                        "Failed to delete history.",
-
-                    error: err.message
+                        "History deleted successfully!"
 
                 });
 
             }
 
+        );
 
-            if (result.affectedRows === 0) {
-
-                return res.status(404).json({
-
-                    success: false,
-
-                    message: "History record not found."
-
-                });
-
-            }
-
-
-            return res.status(200).json({
-
-                success: true,
-
-                message: "History deleted successfully!"
-
-            });
-
-        }
-
-    );
-
-});
+    }
+);
 
 
 // ==================================================
-// START SERVER
+// 404 HANDLER
 // ==================================================
 
-const PORT = process.env.PORT || 5000;
+app.use(
+    (req, res) => {
+
+        res.status(404).json({
+
+            success: false,
+
+            message:
+                "API route not found."
+
+        });
+
+    }
+);
+
+
+// ==================================================
+// SERVER START
+// ==================================================
+
+const PORT =
+    process.env.PORT || 5000;
 
 
 app.listen(

@@ -1,0 +1,17 @@
+{
+  "name": "Medicine Reminder System",
+  "short_name": "Medicine Reminder",
+  "description": "Medicine Reminder System Using QR Code",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#075bea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

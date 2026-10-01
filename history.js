@@ -8,7 +8,7 @@
 // ==========================================
 
 const API_URL =
-    "https://medicine-reminder-system-production.up.railway.app";
+    "https://medicine-reminder-system-production-3a18.up.railway.app";
 
 
 // ==========================================

@@ -1,44 +1,100 @@
 // ==========================================
+// MEDICINE REMINDER SYSTEM
+// SAVE MEDICINE
+// RAILWAY BACKEND
+// ==========================================
+
+
+// ==========================================
+// BACKEND URL
+// ==========================================
+
+const API_URL =
+    "https://medicine-reminder-system-production-3a18.up.railway.app";
+
+
+// ==========================================
 // SAVE MEDICINE
 // ==========================================
 
-// RAILWAY BACKEND URL
-const API_URL =
-    "https://medicine-reminder-system-production.up.railway.app";
-
-
 async function saveMedicine() {
 
-    const button = document.querySelector(
-        'button[onclick="saveMedicine()"]'
-    );
+    const button =
+        document.querySelector(
+            'button[onclick="saveMedicine()"]'
+        );
 
 
     // ======================================
     // GET FORM VALUES
     // ======================================
 
-    const medicine =
-        document.getElementById("medicine").value.trim();
+    const medicineElement =
+        document.getElementById("medicine");
 
-    const dosage =
-        document.getElementById("dosage").value.trim();
+    const dosageElement =
+        document.getElementById("dosage");
 
-    const time =
-        document.getElementById("time").value;
+    const timeElement =
+        document.getElementById("time");
 
-    const start =
-        document.getElementById("start").value;
+    const startElement =
+        document.getElementById("start");
 
-    let end =
-        document.getElementById("end").value;
+    const endElement =
+        document.getElementById("end");
 
-    const medicineType =
-        document.getElementById("medicineType").value;
+    const medicineTypeElement =
+        document.getElementById("medicineType");
 
 
     // ======================================
-    // LOGGED IN USER
+    // CHECK FORM ELEMENTS
+    // ======================================
+
+    if (
+        !medicineElement ||
+        !dosageElement ||
+        !timeElement ||
+        !startElement ||
+        !endElement ||
+        !medicineTypeElement
+    ) {
+
+        alert(
+            "❌ Form fields not found.\n\n" +
+            "Please check add-medicine.html."
+        );
+
+        return;
+    }
+
+
+    // ======================================
+    // GET VALUES
+    // ======================================
+
+    const medicine =
+        medicineElement.value.trim();
+
+    const dosage =
+        dosageElement.value.trim();
+
+    const time =
+        timeElement.value;
+
+    const start =
+        startElement.value;
+
+    let end =
+        endElement.value;
+
+    const medicineType =
+        medicineTypeElement.value;
+
+
+    // ======================================
+    // LOGIN CHECK
     // ======================================
 
     const loggedInUser =
@@ -57,14 +113,15 @@ async function saveMedicine() {
 
 
     // ======================================
-    // VALIDATION
+    // REQUIRED VALIDATION
     // ======================================
 
     if (
         medicine === "" ||
         dosage === "" ||
         time === "" ||
-        start === ""
+        start === "" ||
+        medicineType === ""
     ) {
 
         alert(
@@ -76,7 +133,7 @@ async function saveMedicine() {
 
 
     // ======================================
-    // SHORT-TERM MEDICINE
+    // SHORT TERM
     // ======================================
 
     if (
@@ -93,14 +150,15 @@ async function saveMedicine() {
 
 
     // ======================================
-    // LIFELONG MEDICINE
+    // LIFELONG
     // ======================================
 
     if (
         medicineType === "lifelong"
     ) {
 
-        end = "9999-12-31";
+        end =
+            "9999-12-31";
 
     }
 
@@ -123,36 +181,90 @@ async function saveMedicine() {
 
 
     // ======================================
-    // REMINDER STATUS
+    // REMINDER RULE
+    // ======================================
+    // MORE THAN 7 DAYS = REMINDER
+    // 7 DAYS OR LESS = NO REMINDER
+    // LIFELONG = REMINDER
     // ======================================
 
-    const reminderStatus =
+    let reminderStatus =
+        "NOT REQUIRED";
+
+
+    if (
         medicineType === "lifelong"
-            ? "ENABLED"
-            : "NOT REQUIRED";
+    ) {
+
+        reminderStatus =
+            "ENABLED";
+
+    }
+
+    else {
+
+        const startDate =
+            new Date(start);
+
+        const endDate =
+            new Date(end);
+
+        const difference =
+            endDate - startDate;
+
+        const totalDays =
+            Math.ceil(
+                difference /
+                (1000 * 60 * 60 * 24)
+            );
+
+
+        if (totalDays > 7) {
+
+            reminderStatus =
+                "ENABLED";
+
+        }
+
+        else {
+
+            reminderStatus =
+                "NOT REQUIRED";
+
+        }
+
+    }
 
 
     // ======================================
-    // DATA
+    // MEDICINE DATA
     // ======================================
 
     const medicineData = {
 
-        username: loggedInUser,
+        username:
+            loggedInUser,
 
-        medicine: medicine,
+        medicine:
+            medicine,
 
-        dosage: dosage,
+        dosage:
+            dosage,
 
-        time: time,
+        time:
+            time,
 
-        start: start,
+        start:
+            start,
 
-        end: end,
+        end:
+            end,
 
-        medicineType: medicineType,
+        medicineType:
+            medicineType,
 
-        reminderStatus: reminderStatus
+        reminderStatus:
+            reminderStatus
 
     };
 
@@ -164,12 +276,13 @@ async function saveMedicine() {
 
 
     // ======================================
-    // BUTTON - SAVING
+    // DISABLE BUTTON
     // ======================================
 
     if (button) {
 
-        button.disabled = true;
+        button.disabled =
+            true;
 
         button.innerHTML =
             "⏳ Saving...";
@@ -190,25 +303,29 @@ async function saveMedicine() {
             new AbortController();
 
 
-        timeoutId = setTimeout(
-            function () {
+        timeoutId =
+            setTimeout(
+                () => {
 
-                controller.abort();
+                    controller.abort();
 
-            },
-            10000
-        );
+                },
+                15000
+            );
 
 
         const response =
             await fetch(
                 `${API_URL}/api/medicines`,
                 {
+
                     method: "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
@@ -231,6 +348,10 @@ async function saveMedicine() {
             response.status
         );
 
+
+        // ==================================
+        // READ RESPONSE
+        // ==================================
 
         const result =
             await response.json();
@@ -261,12 +382,25 @@ async function saveMedicine() {
         // LOCAL STORAGE
         // ==================================
 
-        let medicines =
-            JSON.parse(
-                localStorage.getItem(
-                    "medicines"
-                )
-            ) || [];
+        let medicines = [];
+
+
+        try {
+
+            medicines =
+                JSON.parse(
+                    localStorage.getItem(
+                        "medicines"
+                    )
+                ) || [];
+
+        }
+
+        catch {
+
+            medicines = [];
+
+        }
 
 
         medicines.push(
@@ -276,18 +410,22 @@ async function saveMedicine() {
 
         localStorage.setItem(
             "medicines",
-            JSON.stringify(medicines)
+            JSON.stringify(
+                medicines
+            )
         );
 
 
         localStorage.setItem(
             "medicineData",
-            JSON.stringify(medicineData)
+            JSON.stringify(
+                medicineData
+            )
         );
 
 
         // ==================================
-        // QR CODE
+        // GENERATE QR CODE
         // ==================================
 
         const qrContainer =
@@ -301,20 +439,25 @@ async function saveMedicine() {
             typeof QRCode !== "undefined"
         ) {
 
-            qrContainer.innerHTML = "";
+            qrContainer.innerHTML =
+                "";
 
 
             new QRCode(
                 qrContainer,
                 {
+
                     text:
                         JSON.stringify(
                             medicineData
                         ),
 
-                    width: 180,
+                    width:
+                        180,
 
-                    height: 180
+                    height:
+                        180
+
                 }
             );
 
@@ -335,34 +478,41 @@ async function saveMedicine() {
                     : "Short-Term"
             ) +
             "\n" +
-            "Smart Reminder: " +
+            "Reminder: " +
             reminderStatus
         );
 
 
         // ==================================
-        // BUTTON RESET
+        // RESET BUTTON
         // ==================================
 
         if (button) {
 
-            button.disabled = false;
+            button.disabled =
+                false;
 
             button.innerHTML =
                 "💾 Save Medicine";
 
         }
 
-
     }
 
     catch (error) {
+
+        clearTimeout(timeoutId);
+
 
         console.error(
             "❌ Backend Error:",
             error
         );
 
+
+        // ==================================
+        // TIMEOUT
+        // ==================================
 
         if (
             error.name ===
@@ -371,10 +521,32 @@ async function saveMedicine() {
 
             alert(
                 "❌ Backend response is taking too long.\n\n" +
-                "Please check whether Railway backend is running."
+                "Please check Railway backend."
             );
 
         }
+
+        // ==================================
+        // FETCH / CORS ERROR
+        // ==================================
+
+        else if (
+            error instanceof TypeError
+        ) {
+
+            alert(
+                "❌ Failed to connect to Railway backend.\n\n" +
+                "Backend URL:\n" +
+                API_URL +
+                "\n\n" +
+                "Please refresh the page and try again."
+            );
+
+        }
+
+        // ==================================
+        // OTHER ERROR
+        // ==================================
 
         else {
 
@@ -388,12 +560,13 @@ async function saveMedicine() {
 
 
         // ==================================
-        // BUTTON RESET
+        // RESET BUTTON
         // ==================================
 
         if (button) {
 
-            button.disabled = false;
+            button.disabled =
+                false;
 
             button.innerHTML =
                 "💾 Save Medicine";

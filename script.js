@@ -3,6 +3,7 @@
 // RAILWAY BACKEND VERSION
 // ==========================================
 
+// Railway Backend URL
 const API_URL =
     "https://medicine-reminder-system-production.up.railway.app";
 
@@ -33,7 +34,6 @@ function scanQR() {
 }
 
 
-
 // ==========================================
 // SAVE REMINDER
 // ==========================================
@@ -43,7 +43,6 @@ function saveReminder() {
     alert("Medicine Reminder Saved!");
 
 }
-
 
 
 // ==========================================
@@ -57,17 +56,16 @@ async function loadMedicines() {
         const response =
             await fetch(`${API_URL}/api/medicines`);
 
-
         if (!response.ok) {
+
             throw new Error(
                 "Unable to load medicines"
             );
-        }
 
+        }
 
         const result =
             await response.json();
-
 
         const medicines =
             Array.isArray(result)
@@ -75,9 +73,12 @@ async function loadMedicines() {
                 : result.medicines || [];
 
 
+        // ======================================
+        // CHECK LOGIN
+        // ======================================
+
         const loggedInUser =
             localStorage.getItem("loggedInUser");
-
 
         if (!loggedInUser) {
 
@@ -88,7 +89,10 @@ async function loadMedicines() {
         }
 
 
-        // Only logged-in user's medicines
+        // ======================================
+        // ONLY LOGGED-IN USER MEDICINES
+        // ======================================
+
         const patientMedicines =
             medicines.filter(function (item) {
 
@@ -98,7 +102,10 @@ async function loadMedicines() {
             });
 
 
-        // No medicines
+        // ======================================
+        // NO MEDICINES
+        // ======================================
+
         if (patientMedicines.length === 0) {
 
             const name =
@@ -127,7 +134,10 @@ async function loadMedicines() {
         }
 
 
-        // Show latest medicine
+        // ======================================
+        // SHOW LATEST MEDICINE
+        // ======================================
+
         const latestMedicine =
             patientMedicines[
                 patientMedicines.length - 1
@@ -171,7 +181,10 @@ async function loadMedicines() {
         }
 
 
-        // Start reminders
+        // ======================================
+        // START REMINDERS
+        // ======================================
+
         startAllReminders(
             patientMedicines
         );
@@ -189,7 +202,6 @@ async function loadMedicines() {
 }
 
 
-
 // ==========================================
 // START ALL MEDICINE REMINDERS
 // ==========================================
@@ -197,7 +209,10 @@ async function loadMedicines() {
 function startAllReminders(medicines) {
 
 
-    // Request notification permission
+    // ======================================
+    // REQUEST NOTIFICATION PERMISSION
+    // ======================================
+
     if (
         "Notification" in window &&
         Notification.permission === "default"
@@ -208,7 +223,10 @@ function startAllReminders(medicines) {
     }
 
 
-    // Check every second
+    // ======================================
+    // CHECK EVERY SECOND
+    // ======================================
+
     setInterval(function () {
 
 
@@ -239,12 +257,14 @@ function startAllReminders(medicines) {
             currentMinute;
 
 
+        // ==================================
+        // CHECK EACH MEDICINE
+        // ==================================
 
         medicines.forEach(
             function (medicine, index) {
 
 
-                // Backend column names
                 const startDate =
                     medicine.start_date;
 
@@ -288,7 +308,6 @@ function startAllReminders(medicines) {
                 }
 
 
-
                 // ==================================
                 // CHECK REMINDER TIME
                 // ==================================
@@ -320,8 +339,10 @@ function startAllReminders(medicines) {
                         );
 
 
+                    // ==================================
+                    // DON'T SHOW TWICE
+                    // ==================================
 
-                    // Don't show twice
                     if (!alreadyShown) {
 
 
@@ -393,7 +414,6 @@ function startAllReminders(medicines) {
                         }
 
 
-
                         // ==================================
                         // MARK AS SHOWN
                         // ==================================
@@ -416,12 +436,12 @@ function startAllReminders(medicines) {
 }
 
 
-
 // ==========================================
 // PAGE LOAD
 // ==========================================
 
 window.onload = function () {
+
 
     const loggedInUser =
         localStorage.getItem(

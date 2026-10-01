@@ -1,13 +1,28 @@
 // ==========================================
 // EDIT MEDICINE
+// MEDICINE REMINDER SYSTEM
 // ==========================================
 
-const params = new URLSearchParams(window.location.search);
-const medicineId = params.get("id");
 
+// ==========================================
+// GET MEDICINE ID FROM URL
+// ==========================================
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const medicineId =
+    params.get("id");
+
+
+// ==========================================
 // RAILWAY BACKEND URL
+// ==========================================
+
 const API_URL =
-    "https://medicine-reminder-system-production.up.railway.app";
+    "https://medicine-reminder-system-production-3a18.up.railway.app";
 
 
 // ==========================================
@@ -16,37 +31,72 @@ const API_URL =
 
 async function loadMedicine() {
 
-    console.log("Medicine ID:", medicineId);
+    console.log(
+        "💊 Medicine ID:",
+        medicineId
+    );
+
 
     if (!medicineId) {
-        alert("Medicine ID not found!");
-        window.location.href = "medicine-list.html";
+
+        alert(
+            "Medicine ID not found!"
+        );
+
+        window.location.href =
+            "medicine-list.html";
+
         return;
     }
 
+
     try {
 
-        // Get ALL medicines
-        const response = await fetch(
-            `${API_URL}/api/medicines`
-        );
+        // ==================================
+        // GET ALL MEDICINES
+        // ==================================
+
+        const response =
+            await fetch(
+                `${API_URL}/api/medicines`
+            );
+
 
         if (!response.ok) {
-            throw new Error("Failed to load medicines");
+
+            throw new Error(
+                "Failed to load medicines"
+            );
         }
 
-        const medicines = await response.json();
 
-        console.log("All medicines:", medicines);
+        const medicines =
+            await response.json();
 
-        // Find selected medicine
-        const medicine = medicines.find(
-            item => String(item.id) === String(medicineId)
+
+        console.log(
+            "📥 All medicines:",
+            medicines
         );
+
+
+        // ==================================
+        // FIND SELECTED MEDICINE
+        // ==================================
+
+        const medicine =
+            medicines.find(
+                item =>
+                    String(item.id) ===
+                    String(medicineId)
+            );
+
 
         if (!medicine) {
 
-            alert("Medicine not found!");
+            alert(
+                "Medicine not found!"
+            );
 
             window.location.href =
                 "medicine-list.html";
@@ -54,33 +104,110 @@ async function loadMedicine() {
             return;
         }
 
-        console.log("Selected medicine:", medicine);
+
+        console.log(
+            "✅ Selected medicine:",
+            medicine
+        );
 
 
-        // Fill Medicine Name
-        document.getElementById("medicine").value =
-            medicine.medicine_name || "";
+        // ==================================
+        // MEDICINE NAME
+        // ==================================
+
+        const medicineField =
+            document.getElementById(
+                "medicine"
+            );
+
+        if (medicineField) {
+
+            medicineField.value =
+                medicine.medicine_name || "";
+
+        }
 
 
-        // Fill Dosage
-        document.getElementById("dosage").value =
-            medicine.dosage || "";
+        // ==================================
+        // DOSAGE
+        // ==================================
+
+        const dosageField =
+            document.getElementById(
+                "dosage"
+            );
+
+        if (dosageField) {
+
+            dosageField.value =
+                medicine.dosage || "";
+
+        }
 
 
-        // Fill Time
-        document.getElementById("time").value =
-            String(medicine.reminder_time || "")
-                .substring(0, 5);
+        // ==================================
+        // TIME
+        // ==================================
+
+        const timeField =
+            document.getElementById(
+                "time"
+            );
+
+        if (timeField) {
+
+            timeField.value =
+                String(
+                    medicine.reminder_time || ""
+                ).substring(
+                    0,
+                    5
+                );
+
+        }
 
 
-        // Fill Start Date
-        document.getElementById("start").value =
-            formatDate(medicine.start_date);
+        // ==================================
+        // START DATE
+        // ==================================
+
+        const startField =
+            document.getElementById(
+                "start"
+            );
+
+        if (startField) {
+
+            startField.value =
+                formatDate(
+                    medicine.start_date
+                );
+
+        }
 
 
-        // Fill End Date
-        document.getElementById("end").value =
-            formatDate(medicine.end_date);
+        // ==================================
+        // END DATE
+        // ==================================
+
+        const endField =
+            document.getElementById(
+                "end"
+            );
+
+        if (endField) {
+
+            endField.value =
+                formatDate(
+                    medicine.end_date
+                );
+
+        }
+
+
+        console.log(
+            "✅ Medicine details loaded successfully."
+        );
 
     }
 
@@ -92,7 +219,8 @@ async function loadMedicine() {
         );
 
         alert(
-            "Unable to connect to backend!"
+            "Unable to connect to backend!\n\n" +
+            "Please check Railway backend."
         );
 
     }
@@ -107,16 +235,36 @@ async function loadMedicine() {
 function formatDate(date) {
 
     if (!date) {
+
         return "";
+
     }
 
-    let value = String(date);
 
-    if (value.includes("T")) {
-        value = value.substring(0, 10);
+    let value =
+        String(date);
+
+
+    // Remove time if present
+
+    if (
+        value.includes("T")
+    ) {
+
+        value =
+            value.substring(
+                0,
+                10
+            );
+
     }
 
-    return value.substring(0, 10);
+
+    return value.substring(
+        0,
+        10
+    );
+
 }
 
 
@@ -128,45 +276,130 @@ async function updateMedicine() {
 
     if (!medicineId) {
 
-        alert("Medicine ID not found!");
+        alert(
+            "Medicine ID not found!"
+        );
+
+        return;
+    }
+
+
+    // ==================================
+    // GET FORM VALUES
+    // ==================================
+
+    const medicineField =
+        document.getElementById(
+            "medicine"
+        );
+
+    const dosageField =
+        document.getElementById(
+            "dosage"
+        );
+
+    const timeField =
+        document.getElementById(
+            "time"
+        );
+
+    const startField =
+        document.getElementById(
+            "start"
+        );
+
+    const endField =
+        document.getElementById(
+            "end"
+        );
+
+
+    if (
+        !medicineField ||
+        !dosageField ||
+        !timeField ||
+        !startField ||
+        !endField
+    ) {
+
+        alert(
+            "Form fields not found!"
+        );
 
         return;
     }
 
 
     const medicine =
-        document.getElementById("medicine").value.trim();
+        medicineField.value.trim();
 
     const dosage =
-        document.getElementById("dosage").value.trim();
+        dosageField.value.trim();
 
     const time =
-        document.getElementById("time").value;
+        timeField.value;
 
     const start =
-        document.getElementById("start").value;
+        startField.value;
 
-    const end =
-        document.getElementById("end").value;
+    let end =
+        endField.value;
 
 
-    // Validation
+    // ==================================
+    // VALIDATION
+    // ==================================
 
     if (
         !medicine ||
         !dosage ||
         !time ||
-        !start ||
-        !end
+        !start
     ) {
 
-        alert("Please fill all fields!");
+        alert(
+            "Please fill all required fields!"
+        );
 
         return;
     }
 
 
-    if (end < start) {
+    // ==================================
+    // LIFELONG MEDICINE
+    // ==================================
+
+    if (
+        end === "9999-12-31"
+    ) {
+
+        // Keep lifelong date
+
+    }
+
+
+    // ==================================
+    // END DATE REQUIRED
+    // ==================================
+
+    else if (!end) {
+
+        alert(
+            "Please select the End Date!"
+        );
+
+        return;
+    }
+
+
+    // ==================================
+    // DATE VALIDATION
+    // ==================================
+
+    if (
+        end !== "9999-12-31" &&
+        end < start
+    ) {
 
         alert(
             "End date cannot be before start date!"
@@ -176,46 +409,85 @@ async function updateMedicine() {
     }
 
 
+    // ==================================
+    // UPDATE DATA
+    // ==================================
+
     const updateData = {
 
-        medicine_name: medicine,
+        medicine_name:
+            medicine,
 
-        dosage: dosage,
+        dosage:
+            dosage,
 
-        reminder_time: time,
+        reminder_time:
+            time,
 
-        start_date: start,
+        start_date:
+            start,
 
-        end_date: end
+        end_date:
+            end
 
     };
 
 
     console.log(
-        "Updating medicine:",
+        "📤 Updating medicine:",
         medicineId
     );
 
     console.log(
-        "Sending:",
+        "📦 Sending:",
         updateData
     );
 
 
+    // ==================================
+    // DISABLE UPDATE BUTTON
+    // ==================================
+
+    const button =
+        document.querySelector(
+            'button[onclick="updateMedicine()"]'
+        );
+
+
+    if (button) {
+
+        button.disabled =
+            true;
+
+        button.innerHTML =
+            "⏳ Updating...";
+
+    }
+
+
+    // ==================================
+    // SEND UPDATE REQUEST
+    // ==================================
+
     try {
 
-        const response = await fetch(
-            `${API_URL}/api/medicines/${medicineId}`,
-            {
-                method: "PUT",
+        const response =
+            await fetch(
+                `${API_URL}/api/medicines/${medicineId}`,
+                {
+                    method: "PUT",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                body: JSON.stringify(updateData)
-            }
-        );
+                    body:
+                        JSON.stringify(
+                            updateData
+                        )
+                }
+            );
 
 
         const result =
@@ -223,10 +495,14 @@ async function updateMedicine() {
 
 
         console.log(
-            "Backend response:",
+            "📥 Backend response:",
             result
         );
 
+
+        // ==================================
+        // SUCCESS
+        // ==================================
 
         if (response.ok) {
 
@@ -234,15 +510,35 @@ async function updateMedicine() {
                 "Medicine updated successfully! 💊"
             );
 
+
             window.location.href =
                 "medicine-list.html";
 
-        } else {
+        }
+
+
+        // ==================================
+        // BACKEND ERROR
+        // ==================================
+
+        else {
 
             alert(
                 result.message ||
+                result.error ||
                 "Update failed!"
             );
+
+
+            if (button) {
+
+                button.disabled =
+                    false;
+
+                button.innerHTML =
+                    "💾 Update Medicine";
+
+            }
 
         }
 
@@ -251,13 +547,27 @@ async function updateMedicine() {
     catch (error) {
 
         console.error(
-            "Update error:",
+            "❌ Update error:",
             error
         );
 
+
         alert(
-            "Unable to connect to backend!"
+            "Unable to connect to backend!\n\n" +
+            "Error: " +
+            error.message
         );
+
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+            button.innerHTML =
+                "💾 Update Medicine";
+
+        }
 
     }
 

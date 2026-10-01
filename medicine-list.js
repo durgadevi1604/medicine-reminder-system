@@ -2,7 +2,9 @@
 // MEDICINE LIST + AUTOMATIC REMINDER
 // REMINDER FOR MEDICINES MORE THAN 1 WEEK
 // LIFELONG MEDICINES ALSO INCLUDED
-// HIGH VOLUME ALARM VERSION
+// HIGH VOLUME ALARM
+// MEDICINE HISTORY INTEGRATION
+// TAKEN / MISSED / SNOOZED
 // DATE SHIFT FIXED
 // =====================================
 
@@ -15,13 +17,19 @@ let isCheckingReminder = false;
 let reminderInterval = null;
 let audioUnlocked = false;
 
+// Current active reminder
+let currentReminderMedicine = null;
+
+// Snooze timer
+let snoozeTimer = null;
+
 
 // =====================================
 // RAILWAY BACKEND URL
 // =====================================
 
 const API_URL =
-    "https://medicine-reminder-system-production.up.railway.app";
+    "https://medicine-reminder-system-production-3a18.up.railway.app";
 
 
 // =====================================
@@ -49,13 +57,15 @@ function escapeHTML(str) {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-    const username = localStorage.getItem("loggedInUser");
+    const username =
+        localStorage.getItem("loggedInUser");
 
     if (!username) {
 
         alert("Please login first!");
 
-        window.location.href = "login.html";
+        window.location.href =
+            "login.html";
 
         return;
     }
@@ -75,6 +85,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             once: true
         }
     );
+
 });
 
 
@@ -90,7 +101,9 @@ async function loadMedicines() {
 
     if (!medicineContainer) {
 
-        console.error("Medicine container not found!");
+        console.error(
+            "Medicine container not found!"
+        );
 
         return;
     }
@@ -116,13 +129,19 @@ async function loadMedicines() {
             await response.json();
 
         const loggedInUser =
-            localStorage.getItem("loggedInUser");
+            localStorage.getItem(
+                "loggedInUser"
+            );
 
         const userMedicines =
             medicines.filter(
                 medicine =>
-                    String(medicine.username).trim() ===
-                    String(loggedInUser).trim()
+                    String(
+                        medicine.username
+                    ).trim() ===
+                    String(
+                        loggedInUser
+                    ).trim()
             );
 
         if (userMedicines.length === 0) {
@@ -139,82 +158,89 @@ async function loadMedicines() {
 
         medicineContainer.innerHTML = "";
 
-        userMedicines.forEach(medicine => {
+        userMedicines.forEach(
+            medicine => {
 
-            const medicineCard =
-                document.createElement("div");
+                const medicineCard =
+                    document.createElement(
+                        "div"
+                    );
 
-            medicineCard.className =
-                "medicine-card";
+                medicineCard.className =
+                    "medicine-card";
 
-            medicineCard.innerHTML = `
+                medicineCard.innerHTML = `
 
-                <h3>
-                    💊
-                    ${escapeHTML(
-                        medicine.medicine_name
-                    )}
-                </h3>
+                    <h3>
+                        💊
+                        ${escapeHTML(
+                            medicine.medicine_name
+                        )}
+                    </h3>
 
-                <p>
-                    <strong>Dosage:</strong>
-                    ${escapeHTML(
-                        medicine.dosage
-                    )}
-                </p>
+                    <p>
+                        <strong>Dosage:</strong>
+                        ${escapeHTML(
+                            medicine.dosage
+                        )}
+                    </p>
 
-                <p>
-                    <strong>
-                        Reminder Time:
-                    </strong>
-                    ${formatTime(
-                        medicine.reminder_time
-                    )}
-                </p>
+                    <p>
+                        <strong>
+                            Reminder Time:
+                        </strong>
+                        ${formatTime(
+                            medicine.reminder_time
+                        )}
+                    </p>
 
-                <p>
-                    <strong>
-                        Start Date:
-                    </strong>
-                    ${formatDate(
-                        medicine.start_date
-                    )}
-                </p>
+                    <p>
+                        <strong>
+                            Start Date:
+                        </strong>
+                        ${formatDate(
+                            medicine.start_date
+                        )}
+                    </p>
 
-                <p>
-                    <strong>
-                        End Date:
-                    </strong>
-                    ${formatDate(
-                        medicine.end_date
-                    )}
-                </p>
+                    <p>
+                        <strong>
+                            End Date:
+                        </strong>
+                        ${formatDate(
+                            medicine.end_date
+                        )}
+                    </p>
 
-                <div class="medicine-buttons">
+                    <div class="medicine-buttons">
 
-                    <button
-                        type="button"
-                        onclick="editMedicine(${Number(
-                            medicine.id
-                        )})">
-                        ✏️ Edit
-                    </button>
+                        <button
+                            type="button"
+                            onclick="editMedicine(${Number(
+                                medicine.id
+                            )})"
+                        >
+                            ✏️ Edit
+                        </button>
 
-                    <button
-                        type="button"
-                        onclick="deleteMedicine(${Number(
-                            medicine.id
-                        )})">
-                        🗑️ Delete
-                    </button>
+                        <button
+                            type="button"
+                            onclick="deleteMedicine(${Number(
+                                medicine.id
+                            )})"
+                        >
+                            🗑️ Delete
+                        </button>
 
-                </div>
-            `;
+                    </div>
+                `;
 
-            medicineContainer.appendChild(
-                medicineCard
-            );
-        });
+                medicineContainer.appendChild(
+                    medicineCard
+                );
+
+            }
+        );
 
     }
 
@@ -281,7 +307,11 @@ function getDateOnly(dateValue) {
 
 function dateToNumber(dateString) {
 
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    if (
+        !/^\d{4}-\d{2}-\d{2}$/.test(
+            dateString
+        )
+    ) {
 
         return null;
     }
@@ -317,7 +347,10 @@ function getMedicineDurationDays(
     endDate
 ) {
 
-    if (endDate === "9999-12-31") {
+    if (
+        endDate ===
+        "9999-12-31"
+    ) {
 
         return Infinity;
     }
@@ -382,7 +415,10 @@ function formatTime(timeValue) {
         hour = 12;
     }
 
-    return `${String(hour).padStart(2, "0")}:${minute} ${ampm}`;
+    return `${String(hour).padStart(
+        2,
+        "0"
+    )}:${minute} ${ampm}`;
 }
 
 
@@ -431,7 +467,10 @@ async function unlockAlarmAudio() {
         const testContext =
             new AudioContext();
 
-        if (testContext.state === "suspended") {
+        if (
+            testContext.state ===
+            "suspended"
+        ) {
 
             await testContext.resume();
         }
@@ -464,7 +503,9 @@ function startReminderChecker() {
 
     if (reminderInterval) {
 
-        clearInterval(reminderInterval);
+        clearInterval(
+            reminderInterval
+        );
     }
 
     checkMedicineReminder();
@@ -501,7 +542,9 @@ async function checkMedicineReminder() {
     try {
 
         const username =
-            localStorage.getItem("loggedInUser");
+            localStorage.getItem(
+                "loggedInUser"
+            );
 
         if (!username) {
             return;
@@ -525,28 +568,34 @@ async function checkMedicineReminder() {
         const currentDate =
             `${now.getFullYear()}-${String(
                 now.getMonth() + 1
-            ).padStart(2, "0")}-${String(
+            ).padStart(
+                2,
+                "0"
+            )}-${String(
                 now.getDate()
-            ).padStart(2, "0")}`;
+            ).padStart(
+                2,
+                "0"
+            )}`;
 
         const currentHours =
             String(
                 now.getHours()
-            ).padStart(2, "0");
+            ).padStart(
+                2,
+                "0"
+            );
 
         const currentMinutes =
             String(
                 now.getMinutes()
-            ).padStart(2, "0");
+            ).padStart(
+                2,
+                "0"
+            );
 
         const currentTime =
             `${currentHours}:${currentMinutes}`;
-
-        console.log(
-            "⏰ Current:",
-            currentDate,
-            currentTime
-        );
 
         const userMedicines =
             medicines.filter(
@@ -580,18 +629,18 @@ async function checkMedicineReminder() {
                 );
 
             console.log(
-                `💊 ${medicine.medicine_name} duration:`,
+                `💊 ${
+                    medicine.medicine_name
+                } duration:`,
                 durationDays === Infinity
                     ? "LIFELONG"
-                    : durationDays + " days"
+                    : durationDays +
+                      " days"
             );
 
-            if (durationDays <= 7) {
-
-                console.log(
-                    "⏭️ Reminder skipped - 1 week or less:",
-                    medicine.medicine_name
-                );
+            if (
+                durationDays <= 7
+            ) {
 
                 continue;
             }
@@ -601,42 +650,33 @@ async function checkMedicineReminder() {
                 currentDate < startDate
             ) {
 
-                console.log(
-                    "⏭️ Medicine has not started yet:",
-                    medicine.medicine_name
-                );
-
                 continue;
             }
 
             if (
-                endDate !== "9999-12-31" &&
-                currentDate > endDate
+                endDate !==
+                    "9999-12-31" &&
+                currentDate >
+                    endDate
             ) {
-
-                console.log(
-                    "⏭️ Medicine period ended:",
-                    medicine.medicine_name
-                );
 
                 continue;
             }
 
             const reminderTime =
                 String(
-                    medicine.reminder_time || ""
-                ).substring(0, 5);
+                    medicine.reminder_time ||
+                    ""
+                ).substring(
+                    0,
+                    5
+                );
 
             if (
                 !/^\d{2}:\d{2}$/.test(
                     reminderTime
                 )
             ) {
-
-                console.log(
-                    "❌ Invalid reminder time:",
-                    reminderTime
-                );
 
                 continue;
             }
@@ -699,6 +739,9 @@ async function checkMedicineReminder() {
 function showMedicineReminder(
     medicine
 ) {
+
+    currentReminderMedicine =
+        medicine;
 
     const medicineName =
         escapeHTML(
@@ -765,7 +808,7 @@ function showMedicineReminder(
             "0 10px 40px rgba(0,0,0,0.3)";
 
         alarmBox.style.minWidth =
-            "280px";
+            "300px";
 
         document.body.appendChild(
             alarmBox
@@ -774,19 +817,31 @@ function showMedicineReminder(
 
     alarmBox.innerHTML = `
 
-        <div style="font-size:45px;">
+        <div style="
+            font-size:45px;
+            margin-bottom:8px;
+        ">
             💊
         </div>
 
-        <h2>
+        <h2 style="
+            margin:5px 0;
+            color:#075bea;
+        ">
             Medicine Reminder
         </h2>
 
-        <p style="font-size:18px;">
+        <p style="
+            font-size:18px;
+            margin:10px 0;
+        ">
             Please take your medicine now.
         </p>
 
-        <p>
+        <p style="
+            font-size:17px;
+            margin:10px 0 18px;
+        ">
             <strong>
                 ${medicineName}
             </strong>
@@ -798,27 +853,330 @@ function showMedicineReminder(
             }
         </p>
 
-        <button
-            onclick="stopAlarm()"
-            style="
-                margin-top:15px;
-                padding:12px 25px;
-                border:none;
-                border-radius:10px;
-                background:#d63384;
-                color:white;
-                font-size:16px;
-                cursor:pointer;
-            "
-        >
-            🔕 Stop Alarm
-        </button>
+        <div style="
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        ">
+
+            <button
+                onclick="medicineTaken()"
+                style="
+                    padding:12px;
+                    border:none;
+                    border-radius:10px;
+                    background:#16a34a;
+                    color:white;
+                    font-size:16px;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                ✅ Taken
+            </button>
+
+            <button
+                onclick="medicineSnoozed()"
+                style="
+                    padding:12px;
+                    border:none;
+                    border-radius:10px;
+                    background:#f59e0b;
+                    color:white;
+                    font-size:16px;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                ⏳ Snooze 5 Minutes
+            </button>
+
+            <button
+                onclick="medicineMissed()"
+                style="
+                    padding:12px;
+                    border:none;
+                    border-radius:10px;
+                    background:#dc2626;
+                    color:white;
+                    font-size:16px;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                ❌ Missed
+            </button>
+
+        </div>
     `;
 
     alarmBox.style.display =
         "block";
 
     playAlarm();
+}
+
+
+// =====================================
+// SAVE MEDICINE HISTORY
+// =====================================
+
+async function saveMedicineHistory(
+    medicine,
+    status
+) {
+
+    if (!medicine) {
+
+        console.error(
+            "No medicine selected for history."
+        );
+
+        return false;
+    }
+
+    const now =
+        new Date();
+
+    const historyDate =
+        `${now.getFullYear()}-${String(
+            now.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        )}-${String(
+            now.getDate()
+        ).padStart(
+            2,
+            "0"
+        )}`;
+
+    const historyTime =
+        `${String(
+            now.getHours()
+        ).padStart(
+            2,
+            "0"
+        )}:${String(
+            now.getMinutes()
+        ).padStart(
+            2,
+            "0"
+        )}:${String(
+            now.getSeconds()
+        ).padStart(
+            2,
+            "0"
+        )}`;
+
+    const username =
+        localStorage.getItem(
+            "loggedInUser"
+        );
+
+    const historyData = {
+
+        username: username,
+
+        medicine_id:
+            Number(medicine.id),
+
+        medicine_name:
+            medicine.medicine_name,
+
+        dosage:
+            medicine.dosage,
+
+        reminder_time:
+            String(
+                medicine.reminder_time
+            ).substring(
+                0,
+                8
+            ),
+
+        status:
+            status,
+
+        history_date:
+            historyDate,
+
+        history_time:
+            historyTime
+    };
+
+    console.log(
+        "📤 Saving history:",
+        historyData
+    );
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/history`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            historyData
+                        )
+                }
+            );
+
+        const result =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.message ||
+                "History save failed."
+            );
+        }
+
+        console.log(
+            "✅ History saved:",
+            result
+        );
+
+        return true;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "❌ History save error:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+// =====================================
+// TAKEN
+// =====================================
+
+async function medicineTaken() {
+
+    if (!currentReminderMedicine) {
+        return;
+    }
+
+    const medicine =
+        currentReminderMedicine;
+
+    stopAlarm();
+
+    const saved =
+        await saveMedicineHistory(
+            medicine,
+            "Taken"
+        );
+
+    if (saved) {
+
+        alert(
+            `✅ ${
+                medicine.medicine_name
+            } marked as Taken.`
+        );
+
+    }
+}
+
+
+// =====================================
+// MISSED
+// =====================================
+
+async function medicineMissed() {
+
+    if (!currentReminderMedicine) {
+        return;
+    }
+
+    const medicine =
+        currentReminderMedicine;
+
+    stopAlarm();
+
+    const saved =
+        await saveMedicineHistory(
+            medicine,
+            "Missed"
+        );
+
+    if (saved) {
+
+        alert(
+            `❌ ${
+                medicine.medicine_name
+            } marked as Missed.`
+        );
+
+    }
+}
+
+
+// =====================================
+// SNOOZED
+// =====================================
+
+async function medicineSnoozed() {
+
+    if (!currentReminderMedicine) {
+        return;
+    }
+
+    const medicine =
+        currentReminderMedicine;
+
+    stopAlarm();
+
+    const saved =
+        await saveMedicineHistory(
+            medicine,
+            "Snoozed"
+        );
+
+    if (saved) {
+
+        alert(
+            `⏳ ${
+                medicine.medicine_name
+            } snoozed for 5 minutes.`
+        );
+
+    }
+
+    if (snoozeTimer) {
+
+        clearTimeout(
+            snoozeTimer
+        );
+    }
+
+    snoozeTimer =
+        setTimeout(
+            () => {
+
+                showMedicineReminder(
+                    medicine
+                );
+
+            },
+            5 * 60 * 1000
+        );
 }
 
 
@@ -856,7 +1214,8 @@ function sendNotification(
         "denied"
     ) {
 
-        Notification.requestPermission()
+        Notification
+            .requestPermission()
             .then(permission => {
 
                 if (
@@ -872,6 +1231,7 @@ function sendNotification(
                         }
                     );
                 }
+
             })
             .catch(error => {
 
@@ -879,6 +1239,7 @@ function sendNotification(
                     "Notification error:",
                     error
                 );
+
             });
     }
 }
@@ -898,7 +1259,9 @@ function playAlarm() {
 
         try {
 
-            window.speechSynthesis.cancel();
+            window
+                .speechSynthesis
+                .cancel();
 
             const speakReminder =
                 () => {
@@ -930,17 +1293,34 @@ function playAlarm() {
                             voice => {
 
                                 const name =
-                                    voice.name.toLowerCase();
+                                    voice.name
+                                        .toLowerCase();
 
                                 return (
-                                    name.includes("female") ||
-                                    name.includes("zira") ||
-                                    name.includes("samantha") ||
-                                    name.includes("susan") ||
-                                    name.includes("karen") ||
-                                    name.includes("victoria") ||
-                                    name.includes("aria") ||
-                                    name.includes("jenny")
+                                    name.includes(
+                                        "female"
+                                    ) ||
+                                    name.includes(
+                                        "zira"
+                                    ) ||
+                                    name.includes(
+                                        "samantha"
+                                    ) ||
+                                    name.includes(
+                                        "susan"
+                                    ) ||
+                                    name.includes(
+                                        "karen"
+                                    ) ||
+                                    name.includes(
+                                        "victoria"
+                                    ) ||
+                                    name.includes(
+                                        "aria"
+                                    ) ||
+                                    name.includes(
+                                        "jenny"
+                                    )
                                 );
                             }
                         );
@@ -967,7 +1347,8 @@ function playAlarm() {
 
                 speakReminder();
 
-            } else {
+            }
+            else {
 
                 window
                     .speechSynthesis
@@ -1180,7 +1561,7 @@ function playAlarm() {
                     if (
                         alarmAudioContext &&
                         alarmAudioContext.state !==
-                        "closed"
+                            "closed"
                     ) {
 
                         playMelody();
@@ -1192,9 +1573,31 @@ function playAlarm() {
 
         alarmStopTimer =
             setTimeout(
-                () => {
+                async () => {
 
-                    stopAlarm();
+                    if (
+                        currentReminderMedicine
+                    ) {
+
+                        const medicine =
+                            currentReminderMedicine;
+
+                        stopAlarm();
+
+                        await saveMedicineHistory(
+                            medicine,
+                            "Missed"
+                        );
+
+                        console.log(
+                            "❌ Reminder automatically marked as Missed."
+                        );
+
+                    }
+                    else {
+
+                        stopAlarm();
+                    }
 
                 },
                 30000
@@ -1222,18 +1625,29 @@ async function testAlarm() {
 
     lastReminderKey = "";
 
-    playAlarm();
-
-    const alarmBox =
-        document.getElementById(
-            "medicineAlarmBox"
+    const username =
+        localStorage.getItem(
+            "loggedInUser"
         );
 
-    if (alarmBox) {
+    if (!currentReminderMedicine) {
 
-        alarmBox.style.display =
-            "block";
+        currentReminderMedicine = {
+            id: 0,
+            username:
+                username,
+            medicine_name:
+                "Test Medicine",
+            dosage:
+                "Test Dose",
+            reminder_time:
+                "00:00:00"
+        };
     }
+
+    showMedicineReminder(
+        currentReminderMedicine
+    );
 }
 
 
