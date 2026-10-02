@@ -13,7 +13,6 @@ const app = express();
 
 // ==================================================
 // CORS - MANUAL
-// EXPRESS 5 COMPATIBLE
 // ==================================================
 
 app.use((req, res, next) => {
@@ -53,15 +52,10 @@ app.use((req, res, next) => {
 
     if (req.method === "OPTIONS") {
 
-        console.log(
-            `🟢 CORS preflight: ${
-                req.headers.origin || "unknown"
-            }`
-        );
-
         return res
             .status(204)
             .end();
+
     }
 
     next();
@@ -159,14 +153,43 @@ db.query(
                 "❌ MySQL connection failed:"
             );
 
-            console.error(
-                err
-            );
+            console.error(err);
 
         } else {
 
             console.log(
                 "✅ MySQL connected successfully!"
+            );
+
+        }
+
+    }
+);
+
+
+// ==================================================
+// AUTO-FIX MEDICINE ID AUTO_INCREMENT
+// ==================================================
+
+db.query(
+    `ALTER TABLE medicines
+     MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`,
+    (err) => {
+
+        if (err) {
+
+            console.error(
+                "❌ Medicine ID auto-increment fix failed:"
+            );
+
+            console.error(
+                err.message
+            );
+
+        } else {
+
+            console.log(
+                "✅ Medicine ID AUTO_INCREMENT is ready!"
             );
 
         }
@@ -353,10 +376,6 @@ app.post(
         } = req.body;
 
 
-        // ==========================================
-        // REQUIRED DATA
-        // ==========================================
-
         if (!username || !password) {
 
             return res
@@ -381,10 +400,6 @@ app.post(
             String(password).trim();
 
 
-        // ==========================================
-        // USERNAME VALIDATION
-        // ==========================================
-
         if (
             cleanUsername.length < 1 ||
             cleanUsername.length > 10
@@ -404,10 +419,6 @@ app.post(
 
         }
 
-
-        // ==========================================
-        // PASSWORD - EXACTLY 5 DIGITS
-        // ==========================================
 
         if (
             !/^\d{5}$/.test(
@@ -430,14 +441,9 @@ app.post(
         }
 
 
-        // ==========================================
-        // CHECK USERNAME
-        // ==========================================
-
         const checkSQL = `
 
-            SELECT
-                id
+            SELECT id
 
             FROM users
 
@@ -478,10 +484,6 @@ app.post(
                 }
 
 
-                // ==================================
-                // USER ALREADY EXISTS
-                // ==================================
-
                 if (
                     results.length > 0
                 ) {
@@ -500,10 +502,6 @@ app.post(
 
                 }
 
-
-                // ==================================
-                // INSERT USER
-                // ==================================
 
                 const insertSQL = `
 
@@ -617,10 +615,6 @@ app.post(
         } = req.body;
 
 
-        // ==========================================
-        // REQUIRED DATA
-        // ==========================================
-
         if (!username || !password) {
 
             return res
@@ -644,10 +638,6 @@ app.post(
         const cleanPassword =
             String(password).trim();
 
-
-        // ==========================================
-        // FIND USER
-        // ==========================================
 
         const sql = `
 
@@ -695,10 +685,6 @@ app.post(
                 }
 
 
-                // ==================================
-                // USER NOT FOUND
-                // ==================================
-
                 if (
                     results.length === 0
                 ) {
@@ -722,10 +708,6 @@ app.post(
                     results[0];
 
 
-                // ==================================
-                // PASSWORD CHECK
-                // ==================================
-
                 if (
                     String(user.password) !==
                     cleanPassword
@@ -745,10 +727,6 @@ app.post(
 
                 }
 
-
-                // ==================================
-                // LOGIN SUCCESS
-                // ==================================
 
                 console.log(
                     "✅ Login successful:",
@@ -858,6 +836,10 @@ app.post(
             end ||
             "9999-12-31";
 
+
+        // IMPORTANT:
+        // id is NOT inserted here.
+        // MySQL AUTO_INCREMENT creates it.
 
         const sql = `
 
@@ -1426,10 +1408,6 @@ app.post(
         } = req.body;
 
 
-        // ==========================================
-        // CHECK REQUIRED FIELDS
-        // ==========================================
-
         const missingFields = [];
 
 
@@ -1559,10 +1537,6 @@ app.post(
         }
 
 
-        // ==========================================
-        // CHECK MEDICINE ID
-        // ==========================================
-
         const numericMedicineId =
             Number(
                 medicine_id
@@ -1599,10 +1573,6 @@ app.post(
 
         }
 
-
-        // ==========================================
-        // CHECK STATUS
-        // ==========================================
 
         const allowedStatuses = [
 
@@ -1641,10 +1611,6 @@ app.post(
 
         }
 
-
-        // ==========================================
-        // INSERT SQL
-        // ==========================================
 
         const sql = `
 
